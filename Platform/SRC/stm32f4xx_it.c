@@ -23,6 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
+#include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
 
 /** @addtogroup STM32F4xx_IAP
   * @{
@@ -134,6 +135,10 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	//	++, kutelf, 130222
+	//	Time Delay 함수 추가. 
+	TimeDelay_Decrement();
+	//	--, kutelf, 130222
 }
 
 /******************************************************************************/
