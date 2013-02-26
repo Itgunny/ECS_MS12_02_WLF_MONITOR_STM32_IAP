@@ -1,0 +1,350 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.1.4415/W32 for ARM      26/Feb/2013  16:44:26 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Tools\IAR Systems\Embedded Workbench                  #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Platform\SRC\menu.c       #
+#    Command line =  "C:\Tools\IAR Systems\Embedded Workbench                 #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Platform\SRC\menu.c" -D   #
+#                    USE_STDPERIPH_DRIVER -D STM32F4XX -D USE_STM324xG_EVAL   #
+#                    -lcN "C:\Tools\IAR Systems\Embedded Workbench            #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\Debug\List\" -o   #
+#                    "C:\Tools\IAR Systems\Embedded Workbench                 #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\Debug\Obj\"       #
+#                    --debug --endian=little --cpu=Cortex-M4 -e               #
+#                    --fpu=VFPv4_sp --dlib_config "C:\Tools\IAR               #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Ful #
+#                    l.h" -I "C:\Tools\IAR Systems\Embedded Workbench         #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\..\Platform\INC\" #
+#                     -I "C:\Tools\IAR Systems\Embedded Workbench             #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\..\Libraries\CMSI #
+#                    S\Device\ST\STM32F4xx\Include\" -I "C:\Tools\IAR         #
+#                    Systems\Embedded Workbench 6.5\WorkSpace\WL9F_Display_IA #
+#                    P\Project\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\"  #
+#                    -I "C:\Tools\IAR Systems\Embedded Workbench              #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\..\Utilities\STM3 #
+#                    2_EVAL\Common\" -I "C:\Tools\IAR Systems\Embedded        #
+#                    Workbench 6.5\WorkSpace\WL9F_Display_IAP\Project\..\Util #
+#                    ities\STM32_EVAL\STM3240_41_G_EVAL\" -Oh                 #
+#                    --use_c++_inline -I "C:\Tools\IAR Systems\Embedded       #
+#                    Workbench 6.5\arm\CMSIS\Include\"                        #
+#    List file    =  C:\Tools\IAR Systems\Embedded Workbench                  #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\Debug\List\menu.l #
+#                    st                                                       #
+#    Object file  =  C:\Tools\IAR Systems\Embedded Workbench                  #
+#                    6.5\WorkSpace\WL9F_Display_IAP\Project\Debug\Obj\menu.o  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\WL9F_Display_IAP\Platform\SRC\menu.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    STM32F4xx_IAP/src/menu.c 
+      4            * @author  MCD Application Team
+      5            * @version V1.0.0
+      6            * @date    10-October-2011
+      7            * @brief   This file provides the software which contains the main menu routine.
+      8            *          The main menu gives the options of:
+      9            *             - downloading a new binary file, 
+     10            *             - uploading internal flash memory,
+     11            *             - executing the binary file already loaded 
+     12            *             - disabling the write protection of the Flash sectors where the 
+     13            *               user loads his binary file.
+     14            ******************************************************************************
+     15            * @attention
+     16            *
+     17            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     18            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     19            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     20            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     21            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     22            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     23            *
+     24            * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+     25            ******************************************************************************
+     26            */ 
+     27          
+     28          /** @addtogroup STM32F4xx_IAP
+     29            * @{
+     30            */
+     31          
+     32          /* Includes ------------------------------------------------------------------*/
+     33          #include "common.h"
+     34          #include "flash_if.h"
+     35          #include "menu.h"
+     36          #include "ymodem.h"
+     37          
+     38          /* Private typedef -----------------------------------------------------------*/
+     39          /* Private define ------------------------------------------------------------*/
+     40          /* Private macro -------------------------------------------------------------*/
+     41          /* Private variables ---------------------------------------------------------*/
+     42          pFunction Jump_To_Application;
+     43          uint32_t JumpAddress;
+     44          __IO uint32_t FlashProtection = 0;
+     45          uint8_t tab_1024[1024] =
+     46            {
+     47              0
+     48            };
+     49          uint8_t FileName[FILE_NAME_LENGTH];
+     50          
+     51          /* Private function prototypes -----------------------------------------------*/
+     52          void SerialDownload(void);
+     53          void SerialUpload(void);
+     54          
+     55          /* Private functions ---------------------------------------------------------*/
+     56          
+     57          /**
+     58            * @brief  Download a file via serial port
+     59            * @param  None
+     60            * @retval None
+     61            */
+     62          void SerialDownload(void)
+     63          {
+     64            uint8_t Number[10] = "          ";
+     65            int32_t Size = 0;
+     66          
+     67            SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
+     68            Size = Ymodem_Receive(&tab_1024[0]);
+     69            if (Size > 0)
+     70            {
+     71              SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+     72              SerialPutString(FileName);
+     73              Int2Str(Number, Size);
+     74              SerialPutString("\n\r Size: ");
+     75              SerialPutString(Number);
+     76              SerialPutString(" Bytes\r\n");
+     77              SerialPutString("-------------------\n");
+     78            }
+     79            else if (Size == -1)
+     80            {
+     81              SerialPutString("\n\n\rThe image size is higher than the allowed space memory!\n\r");
+     82            }
+     83            else if (Size == -2)
+     84            {
+     85              SerialPutString("\n\n\rVerification failed!\n\r");
+     86            }
+     87            else if (Size == -3)
+     88            {
+     89              SerialPutString("\r\n\nAborted by user.\n\r");
+     90            }
+     91            else
+     92            {
+     93              SerialPutString("\n\rFailed to receive the file!\n\r");
+     94            }
+     95          }
+     96          
+     97          /**
+     98            * @brief  Upload a file via serial port.
+     99            * @param  None
+    100            * @retval None
+    101            */
+    102          void SerialUpload(void)
+    103          {
+    104            uint8_t status = 0 ; 
+    105          
+    106            SerialPutString("\n\n\rSelect Receive File\n\r");
+    107          
+    108            if (GetKey() == CRC16)
+    109            {
+    110              /* Transmit the flash image through ymodem protocol */
+    111              status = Ymodem_Transmit((uint8_t*)APPLICATION_ADDRESS, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
+    112          
+    113              if (status != 0) 
+    114              {
+    115                SerialPutString("\n\rError Occurred while Transmitting File\n\r");
+    116              }
+    117              else
+    118              {
+    119                SerialPutString("\n\rFile uploaded successfully \n\r");
+    120              }
+    121            }
+    122          }
+    123          
+    124          /**
+    125            * @brief  Display the Main Menu on HyperTerminal
+    126            * @param  None
+    127            * @retval None
+    128            */
+    129          void Main_Menu(void)
+    130          {
+    131            uint8_t key = 0;
+    132          
+    133            SerialPutString("\r\n======================================================================");
+    134            SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
+    135            SerialPutString("\r\n=                                                                    =");
+    136            SerialPutString("\r\n=  STM32F4xx In-Application Programming Application  (Version 1.0.0) =");
+    137            SerialPutString("\r\n=                                                                    =");
+    138            SerialPutString("\r\n=                                   By MCD Application Team          =");
+    139            SerialPutString("\r\n======================================================================");
+    140            SerialPutString("\r\n\r\n");
+    141          
+    142            /* Test if any sector of Flash memory where user application will be loaded is write protected */
+    143            if (FLASH_If_GetWriteProtectionStatus() == 0)   
+    144            {
+    145              FlashProtection = 1;
+    146            }
+    147            else
+    148            {
+    149              FlashProtection = 0;
+    150            }
+    151          
+    152            while (1)
+    153            {
+    154              SerialPutString("\r\n================== Main Menu ============================\r\n\n");
+    155              SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");
+    156              SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
+    157              SerialPutString("  Execute The New Program ------------------------------ 3\r\n\n");
+    158          
+    159              if(FlashProtection != 0)
+    160              {
+    161                SerialPutString("  Disable the write protection ------------------------- 4\r\n\n");
+    162              }
+    163          
+    164              SerialPutString("==========================================================\r\n\n");
+    165          
+    166              /* Receive key */
+    167              key = GetKey();
+    168          
+    169              if (key == 0x31)
+    170              {
+    171                /* Download user application in the Flash */
+    172                SerialDownload();
+    173              }
+    174              else if (key == 0x32)
+    175              {
+    176                /* Upload user application from the Flash */
+    177                SerialUpload();
+    178              }
+    179              else if (key == 0x33) /* execute the new program */
+    180              {
+    181                JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+    182                /* Jump to user application */
+    183                Jump_To_Application = (pFunction) JumpAddress;
+    184                /* Initialize user application's Stack Pointer */
+    185                __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+    186                Jump_To_Application();
+    187              }
+    188              else if ((key == 0x34) && (FlashProtection == 1))
+    189              {
+    190                /* Disable the write protection */
+    191                switch (FLASH_If_DisableWriteProtection())
+    192                {
+    193                  case 1:
+    194                  {
+    195                    SerialPutString("Write Protection disabled...\r\n");
+    196                    FlashProtection = 0;
+    197                    break;
+    198                  }
+    199                  case 2:
+    200                  {
+    201                    SerialPutString("Error: Flash write unprotection failed...\r\n");
+    202                    break;
+    203                  }
+    204                  default:
+    205                  {
+    206                  }
+    207                }
+    208              }
+    209              else
+    210              {
+    211                if (FlashProtection == 0)
+    212                {
+    213                  SerialPutString("Invalid Number ! ==> The number should be either 1, 2 or 3\r");
+    214                }
+    215                else
+    216                {
+    217                  SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
+    218                }
+    219              }
+    220            }
+    221          }
+    222          
+    223          /**
+    224            * @}
+    225            */
+    226          
+    227          /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE******/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   Main_Menu
+        16   -- Indirect call
+        16   -> FLASH_If_DisableWriteProtection
+        16   -> FLASH_If_GetWriteProtectionStatus
+        16   -> GetKey
+        16   -> SerialDownload
+        16   -> SerialUpload
+        16   -> Serial_PutString
+      24   SerialDownload
+        24   -> Int2Str
+        24   -> Serial_PutString
+        24   -> Ymodem_Receive
+        24   -> __aeabi_memcpy4
+       8   SerialUpload
+         8   -> GetKey
+         0   -> Serial_PutString
+         8   -> Serial_PutString
+         8   -> Ymodem_Transmit
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      12  ?<Constant "          ">
+      64  ?<Constant "  Disable the write p...">
+      64  ?<Constant "  Download Image To t...">
+      64  ?<Constant "  Execute The New Pro...">
+      64  ?<Constant "  Upload Image From t...">
+      12  ?<Constant " Bytes\r\n">
+      24  ?<Constant "-------------------\n">
+      64  ?<Constant "=====================...">
+      44  ?<Constant "Error: Flash write un...">
+      60  ?<Constant "Invalid Number ! ==> ...">
+      64  ?<Constant "Invalid Number ! ==> ...">_1
+      24  ?<Constant "UploadedFlashImage.bin">
+      60  ?<Constant "Waiting for the file ...">
+      32  ?<Constant "Write Protection disa...">
+      84  ?<Constant "\n\n\r Programming Compl...">
+      28  ?<Constant "\n\n\rSelect Receive File\n\r">
+      64  ?<Constant "\n\n\rThe image size is ...">
+      28  ?<Constant "\n\n\rVerification faile...">
+      12  ?<Constant "\n\r Size: ">
+      44  ?<Constant "\n\rError Occurred whil...">
+      32  ?<Constant "\n\rFailed to receive t...">
+      32  ?<Constant "\n\rFile uploaded succe...">
+      76  ?<Constant "\r\n=                  ...">
+      76  ?<Constant "\r\n=                  ...">_1
+      76  ?<Constant "\r\n=              (C) ...">
+      76  ?<Constant "\r\n=  STM32F4xx In-App...">
+      64  ?<Constant "\r\n================== ...">
+      76  ?<Constant "\r\n===================...">
+      24  ?<Constant "\r\n\nAborted by user.\n\r">
+       8  ?<Constant "\r\n\r\n">
+       4  ??DataTable32
+       4  ??DataTable32_1
+       4  ??DataTable32_2
+      12  Jump_To_Application
+          JumpAddress
+          FlashProtection
+     242  Main_Menu
+     136  SerialDownload
+      54  SerialUpload
+    1280  tab_1024
+          FileName
+
+ 
+ 1 292 bytes in section .bss
+ 1 896 bytes in section .text
+ 
+ 1 896 bytes of CODE memory
+ 1 292 bytes of DATA memory
+
+Errors: none
+Warnings: none
