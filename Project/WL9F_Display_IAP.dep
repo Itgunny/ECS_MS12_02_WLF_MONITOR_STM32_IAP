@@ -475,10 +475,6 @@
           <name>ICCARM</name>
           <file> 102 155 124 96 147 129 146 104 93 160 127 123 149 107 167 220 164 163 161 218 159 99 94 182 148 106 153 103 152 154 150 208 168 179 151 180 156 157 219 196 207 158 95</file>
         </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 102 155 124 96 147 129 146 104 93 160 127 123 149 107 167 220 164 163 161 218 159 99 94 182 148 106 153 103 152 154 150 208 168 179 151 180 156 157 219 196 207 158 95</file>
-        </tool>
       </inputs>
     </file>
     <file>
@@ -1162,10 +1158,6 @@
         </tool>
       </inputs>
     </file>
-    <forcedrebuild>
-      <name>[MULTI_TOOL]</name>
-      <tool>ILINK</tool>
-    </forcedrebuild>
   </configuration>
 </project>
 
