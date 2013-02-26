@@ -63,7 +63,11 @@
 
 /* Uncomment the line below to expanse the "assert_param" macro in the 
    Standard Peripheral Library drivers code */
-/* #define USE_FULL_ASSERT    1 */
+//	++, kutelf, 130222
+//  Project -> Option -> C/C++ Compiler -> Preproessor
+//  Defined symbols 에서 정의하도록 변경!!!
+/* #define USE_FULL_ASSERT    1 */   
+//	--, kutelf, 130222
 
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
