@@ -942,6 +942,9 @@
         <name>$PROJ_DIR$\..\Platform\INC\flash_if.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Platform\INC\FM31X4.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Platform\INC\menu.h</name>
       </file>
       <file>
@@ -955,6 +958,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\INC\stm32f4xx_it.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\INC\System_Init.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\INC\TimeDelay.h</name>
@@ -985,6 +991,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\stm32f4xx_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\SRC\System_Init.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\system_stm32f4xx.c</name>

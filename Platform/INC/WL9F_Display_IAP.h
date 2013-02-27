@@ -30,18 +30,8 @@
 #include "stm324xg_eval.h"
 
 #include "TimeDelay.h"
-
-/*
-
-//  Library_TH -> Hal
-#include "lib_dbg.h"
-#include "System_Configuration.h"
-
-
-//  Library_TH -> Device_Driver
-#include "fsmc_nor.h"
 #include "FM31X4.h"
-*/
+
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

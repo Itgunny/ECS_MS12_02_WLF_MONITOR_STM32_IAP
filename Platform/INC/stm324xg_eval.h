@@ -307,6 +307,7 @@ typedef enum
    incrementing counter. This value should be equal to (System Clock / 1000).
    ie. if system clock = 168MHz then sEE_TIME_CONST should be 168. */
 #define sEE_TIME_CONST                   168 
+
 /**
   * @}
   */  
