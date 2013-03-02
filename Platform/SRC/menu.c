@@ -34,6 +34,7 @@
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
+#include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -68,6 +69,9 @@ void SerialDownload(void)
   Size = Ymodem_Receive(&tab_1024[0]);
   if (Size > 0)
   {
+	//	++, kutelf, 130222
+    //  File을 다 받은 후에 자동으로 Running
+    #if 0
     SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
     SerialPutString(FileName);
     Int2Str(Number, Size);
@@ -75,6 +79,26 @@ void SerialDownload(void)
     SerialPutString(Number);
     SerialPutString(" Bytes\r\n");
     SerialPutString("-------------------\n");
+	#else
+    SerialPutString("\n\n\r Programming Completed Successfully!");
+    SerialPutString("\n\r--------------------------------\r\n Send File Name: ");
+    SerialPutString(FileName);
+    Int2Str(Number, Size);
+    SerialPutString("\n\r Send File Size: ");
+    SerialPutString(Number);
+    SerialPutString(" Bytes\r\n");
+    SerialPutString("--------------------------------\n");
+    SerialPutString("\r\n\r\n");
+    SerialPutString("Application Program Running.....\r\n");
+    
+	/* Jump to user application */
+	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+	Jump_To_Application = (pFunction) JumpAddress;
+	/* Initialize user application's Stack Pointer */
+	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+	Jump_To_Application();
+	#endif
+	//	--, kutelf, 130222
   }
   else if (Size == -1)
   {
@@ -130,6 +154,8 @@ void Main_Menu(void)
 {
   uint8_t key = 0;
 
+  //	++, kutelf, 130222	
+  #if 0	
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
   SerialPutString("\r\n=                                                                    =");
@@ -138,7 +164,23 @@ void Main_Menu(void)
   SerialPutString("\r\n=                                   By MCD Application Team          =");
   SerialPutString("\r\n======================================================================");
   SerialPutString("\r\n\r\n");
-
+  #else
+    SerialPutString("\r\n==========================================================");
+    SerialPutString("\r\n=                                                        =");
+    SerialPutString("\r\n=             TaeHa Mechatronics Co., Ltd.               =");
+    SerialPutString("\r\n=                                                        =");
+    SerialPutString("\r\n= In-Application Programming Application                 =");
+    SerialPutString("\r\n=                                                        =");
+    SerialPutString("\r\n= Project      : WL9F Display (Monitor & Cluster)        =");
+    SerialPutString("\r\n= Environment  : EWARM v6.5, Library v1.0.0              ="); 
+    SerialPutString("\r\n=                STM32F4xx Standard Peripherals Library  =");	
+    SerialPutString("\r\n=                                                        =");
+    SerialPutString("\r\n= By ECS Div. kutelf                                     =");
+    SerialPutString("\r\n==========================================================");
+    SerialPutString("\r\n");
+  #endif
+  //	--, kutelf, 130222
+  
   /* Test if any sector of Flash memory where user application will be loaded is write protected */
   if (FLASH_If_GetWriteProtectionStatus() == 0)   
   {
@@ -151,6 +193,8 @@ void Main_Menu(void)
 
   while (1)
   {
+	//	++, kutelf, 130222
+	#if 0
     SerialPutString("\r\n================== Main Menu ============================\r\n\n");
     SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");
     SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
@@ -160,8 +204,20 @@ void Main_Menu(void)
     {
       SerialPutString("  Disable the write protection ------------------------- 4\r\n\n");
     }
-
     SerialPutString("==========================================================\r\n\n");
+	#else
+    SerialPutString("\r\n==================== Main Menu ===========================\r\n\n");
+    if(FlashProtection != 0)
+    {
+    SerialPutString("  Disable the write protection (STM32F407 Internal Flash) 0\r\n\n");
+    }
+    SerialPutString("  Download Application to the STM32F407 Internal Flash -- 1\r\n\n");
+    SerialPutString("  Upload   Application from   STM32F407 Internal Flash -- 2\r\n\n");
+    SerialPutString("  Execute The New Program ------------------------------- 3\r\n\n");
+	SerialPutString("  EEPROM Initialization --------------------------------- 4\r\n\n");
+    SerialPutString("==========================================================\r\n\n");
+	#endif
+	//	--, kutelf, 130222
 
     /* Receive key */
     key = GetKey();
@@ -185,7 +241,23 @@ void Main_Menu(void)
       __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
       Jump_To_Application();
     }
-    else if ((key == 0x34) && (FlashProtection == 1))
+	//	++, kutelf, 130222
+	//	EEPROM Clear Menu 추가.
+	else if (key == 0x34)
+	{
+    	SerialPutString("EEPROM Initialize(Clear) Start...\n\r");
+    	InitE2PROM();
+    	SerialPutString("EEPROM Initialize(Clear) End...\n\r");
+	}
+	//	--, kutelf, 130222
+	//	++, kutelf, 130222
+	//	Write Pritection Menu Number 변경 
+	#if 0
+	else if ((key == 0x34) && (FlashProtection == 1))
+	#else
+	else if ((key == 0x30) && (FlashProtection == 1))
+	#endif
+	//	--, kutelf, 130222
     {
       /* Disable the write protection */
       switch (FLASH_If_DisableWriteProtection())
@@ -210,11 +282,25 @@ void Main_Menu(void)
     {
       if (FlashProtection == 0)
       {
+		//	++, kutelf, 130222
+		//	Write Pritection Menu Number 변경 
+		#if 0
         SerialPutString("Invalid Number ! ==> The number should be either 1, 2 or 3\r");
+		#else
+        SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
+		#endif
+		//	--, kutelf, 130222
       }
       else
       {
+		//	++, kutelf, 130222
+		//	Write Pritection Menu Number 변경 
+		#if 0
         SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
+		#else
+        SerialPutString("Invalid Number ! ==> The number should be either 0, 1, 2, 3 or 4\r");
+		#endif
+		//	--, kutelf, 130222
       }
     }
   }

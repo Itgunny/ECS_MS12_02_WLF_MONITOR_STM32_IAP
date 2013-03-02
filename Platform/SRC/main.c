@@ -26,6 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "menu.h"
 #include "stm324xg_eval.h"
+#include "WL9F_Display_IAP.h" //	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -46,37 +47,55 @@ static void IAP_Init(void);
   */
 int main(void)
 {
-  /* Unlock the Flash Program Erase controller */
-  FLASH_If_Init();
+  	/* Unlock the Flash Program Erase controller */
+  	FLASH_If_Init();
 
-  /* Initialize Key Button mounted on STM324xG-EVAL board */
-  STM_EVAL_PBInit(BUTTON_KEY, BUTTON_MODE_GPIO);
+	//	++, kutelf, 130222
+	System_Configuration();	//	GPIO Setting
+	System_Initialize();	//	System Initialize
+	FM3164_Watchdog_Init(0x00);
 
-  /* Test if Key push-button on STM324xG-EVAL Board is pressed */
-  if (STM_EVAL_PBGetState(BUTTON_KEY) == 0x00)
-  { 
-    /* Execute the IAP driver in order to reprogram the Flash */
-    IAP_Init();
-    /* Display main menu */
-    Main_Menu ();
-  }
-  /* Keep the user application running */
-  else
-  {
-    /* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
-    if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
-    { 
-      /* Jump to user application */
-      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-      Jump_To_Application = (pFunction) JumpAddress;
-      /* Initialize user application's Stack Pointer */
-      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-      Jump_To_Application();
-    }
-  }
+	//	FW_UPDATE Pin Check -> if Low  = IAP Running
+	//							  High = APP Running
+	#if 1
+	if (GPIO_ReadInputDataBit(FW_UPDATE_PORT, FW_UPDATE) == 0x00)
+	{
+    	/* Execute the IAP driver in order to reprogram the Flash */
+    	IAP_Init();
+    	/* Display main menu */
+    	Main_Menu();
+	}	
+	#else
+	/* Initialize Key Button mounted on STM324xG-EVAL board */
+  	STM_EVAL_PBInit(BUTTON_KEY, BUTTON_MODE_GPIO);
 
-  while (1)
-  {}
+  	/* Test if Key push-button on STM324xG-EVAL Board is pressed */
+  	if (STM_EVAL_PBGetState(BUTTON_KEY) == 0x00)
+  	{ 
+    	/* Execute the IAP driver in order to reprogram the Flash */
+    	IAP_Init();
+    	/* Display main menu */
+    	Main_Menu();
+  	}
+	#endif
+	//	--, kutelf, 130222
+  	/* Keep the user application running */
+  	else
+  	{
+    	/* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
+    	if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+    	{ 
+      		/* Jump to user application */
+      		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+      		Jump_To_Application = (pFunction) JumpAddress;
+      		/* Initialize user application's Stack Pointer */
+      		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+      		Jump_To_Application();
+    	}
+  	}
+
+  	while (1)
+  	{}
 }
 
 /**

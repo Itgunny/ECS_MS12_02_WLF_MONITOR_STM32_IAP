@@ -171,7 +171,6 @@
           <state>USE_STDPERIPH_DRIVER</state>
           <state>STM32F4XX</state>
           <state>USE_STM324xG_EVAL</state>
-          <state>USE_FULL_ASSERT</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -926,6 +925,12 @@
     </settings>
   </configuration>
   <group>
+    <name>CMSIS</name>
+    <file>
+      <name>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c</name>
+    </file>
+  </group>
+  <group>
     <name>EWARM</name>
     <file>
       <name>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f4xx.s</name>
@@ -940,9 +945,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\INC\flash_if.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\INC\FM31X4.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\INC\menu.h</name>
@@ -960,15 +962,6 @@
         <name>$PROJ_DIR$\..\Platform\INC\stm32f4xx_it.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Platform\INC\System_Init.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\INC\TimeDelay.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\INC\WL9F_Display_IAP.h</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\Platform\INC\ymodem.h</name>
       </file>
     </group>
@@ -981,9 +974,6 @@
         <name>$PROJ_DIR$\..\Platform\SRC\flash_if.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Platform\SRC\FM31X4.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\Platform\SRC\main.c</name>
       </file>
       <file>
@@ -994,15 +984,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\stm32f4xx_it.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\SRC\System_Init.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\SRC\system_stm32f4xx.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Platform\SRC\TimeDelay.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\ymodem.c</name>

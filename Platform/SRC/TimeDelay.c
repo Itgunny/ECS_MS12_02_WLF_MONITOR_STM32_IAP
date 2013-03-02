@@ -81,7 +81,7 @@ void TimeDelay_msec(uint32_t nCount)
         for (j = 0; j < 5000; j++);
 #else
 	for (i = 0; i < nCount; i++)
-        for (j = 0; j < 10000; j++);
+        for (j = 0; j < 17000; j++);
 #endif
 }
 

@@ -28,7 +28,9 @@
 
 #include "stm32f4xx.h"
 #include "stm324xg_eval.h"
+#include "common.h"
 
+#include "System_Init.h"
 #include "TimeDelay.h"
 #include "FM31X4.h"
 
