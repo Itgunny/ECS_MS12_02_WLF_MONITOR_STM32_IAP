@@ -14,7 +14,7 @@ Count=0
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=-984858661
+Checksum=1234434902
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0

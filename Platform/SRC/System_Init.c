@@ -27,28 +27,28 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 // EEPROM Clear Variables
-WL9F_SaveE2PROM1		*SaveE2PROM1;
-WL9F_SaveE2PROM2		*SaveE2PROM2;
-WL9F_SaveE2PROM3		*SaveE2PROM3;
+WL9FM_SaveE2PROM1		*SaveE2PROM1;
+WL9FM_SaveE2PROM2		*SaveE2PROM2;
+WL9FM_SaveE2PROM3		*SaveE2PROM3;
 
-WL9F_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
+WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-struct DATA_RTC			RTC_Write;
+struct WL9FM_DATA_RTC   WL9FM_RTC_Write;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 void Init_RTC(void)
 {
-    RTC_Write.Year   = 0;
-	RTC_Write.Month  = 1;
-	RTC_Write.Date   = 1;
-	RTC_Write.Day    = 1;
-	RTC_Write.Hour   = 12;
-	RTC_Write.Minute = 0;
-	RTC_Write.Second = 0;
+    WL9FM_RTC_Write.Year   = 0;
+	WL9FM_RTC_Write.Month  = 1;
+	WL9FM_RTC_Write.Date   = 1;
+	WL9FM_RTC_Write.Day    = 1;
+	WL9FM_RTC_Write.Hour   = 12;
+	WL9FM_RTC_Write.Minute = 0;
+	WL9FM_RTC_Write.Second = 0;
 
-	WRITE_RTC(RTC_Write);
+	WRITE_RTC(WL9FM_RTC_Write);
 }
 
 void InitE2PROM(void)
@@ -59,10 +59,10 @@ void InitE2PROM(void)
 	u8 tmpBuf3[8];
 	u8 tmpBuf4[21];
 	
-	SaveE2PROM1 = (WL9F_SaveE2PROM1*)&tmpBuf1[0];
-	SaveE2PROM2 = (WL9F_SaveE2PROM2*)&tmpBuf2[0];
-	SaveE2PROM3 = (WL9F_SaveE2PROM3*)&tmpBuf3[0];
-	SaveE2PROMoniInfo = (WL9F_SaveE2PROMoniInfo*)&tmpBuf4[0];
+	SaveE2PROM1 = (WL9FM_SaveE2PROM1*)&tmpBuf1[0];
+	SaveE2PROM2 = (WL9FM_SaveE2PROM2*)&tmpBuf2[0];
+	SaveE2PROM3 = (WL9FM_SaveE2PROM3*)&tmpBuf3[0];
+	SaveE2PROMoniInfo = (WL9FM_SaveE2PROMoniInfo*)&tmpBuf4[0];
 
 	SaveE2PROM1->WorkLoad 				= 0;
 	SaveE2PROM1->testWorkLoad 			= 0;

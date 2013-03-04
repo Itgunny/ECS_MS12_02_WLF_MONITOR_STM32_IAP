@@ -232,7 +232,7 @@ typedef struct
 	u8 SecondCam:2;
 	u8 ThirdCam:2;
 	u8 Reserved1:2;
-}WL9F_SaveE2PROM1;
+}WL9FM_SaveE2PROM1;
 #pragma pack()
 
 #pragma pack(1)
@@ -247,7 +247,7 @@ typedef struct
 	u8 AutoLightDay:4;
 	u8 AutoLightNight:4;
 	u32 Reserved1;
-} WL9F_SaveE2PROM2;
+} WL9FM_SaveE2PROM2;
 #pragma pack()
 
 #pragma pack(1)
@@ -265,7 +265,7 @@ typedef struct
 	u8 Phone_10:4;
 	u8 Phone_11:4;
 	u8 Phone_12:4;
-} WL9F_SaveE2PROM3;
+} WL9FM_SaveE2PROM3;
 #pragma pack()
 
 #pragma pack(1)
@@ -277,20 +277,20 @@ typedef struct
 	u8 MoniPorgramVer;
 	u8 MoniSerialNo[11];
 	u8 MoniModel[6];
-} WL9F_SaveE2PROMoniInfo;
+} WL9FM_SaveE2PROMoniInfo;
 #pragma pack()
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern WL9F_SaveE2PROM1			*SaveE2PROM1;
-extern WL9F_SaveE2PROM2			*SaveE2PROM2;
-extern WL9F_SaveE2PROM3			*SaveE2PROM3;
-extern WL9F_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
+extern WL9FM_SaveE2PROM1		*SaveE2PROM1;
+extern WL9FM_SaveE2PROM2		*SaveE2PROM2;
+extern WL9FM_SaveE2PROM3		*SaveE2PROM3;
+extern WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-extern struct DATA_RTC 			RTC_Read;
-extern struct DATA_RTC 			RTC_Write;
+extern struct WL9FM_DATA_RTC 	WL9FM_RTC_Read;
+extern struct WL9FM_DATA_RTC 	WL9FM_RTC_Write;
 
 /* Exported functions ------------------------------------------------------- */
 extern void RCC_Configuration(void);
