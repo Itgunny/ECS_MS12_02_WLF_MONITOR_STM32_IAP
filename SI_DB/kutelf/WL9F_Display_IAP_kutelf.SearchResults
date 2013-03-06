@@ -1,1 +1,30 @@
----- WL9A_TIME_DATA Matches (0 in 0 files) ----
+---- WL9FM Matches (29 in 3 files) ----
+FM31X4.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern struct WL9F_DATA_RTC   	    WL9FM_RTC;
+FM31X4.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern struct WL9F_DATA_EEPROM		WL9FM_DATASAVE;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):WL9FM_SaveE2PROM1		*SaveE2PROM1;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):WL9FM_SaveE2PROM2		*SaveE2PROM2;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):WL9FM_SaveE2PROM3		*SaveE2PROM3;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):struct WL9F_DATA_RTC   WL9FM_RTC_Write;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):    WL9FM_RTC_Write.Year   = 0;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Month  = 1;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Date   = 1;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Day    = 1;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Hour   = 12;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Minute = 0;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WL9FM_RTC_Write.Second = 0;
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	WRITE_RTC(WL9FM_RTC_Write);
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SaveE2PROM1 = (WL9FM_SaveE2PROM1*)&tmpBuf1[0];
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SaveE2PROM2 = (WL9FM_SaveE2PROM2*)&tmpBuf2[0];
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SaveE2PROM3 = (WL9FM_SaveE2PROM3*)&tmpBuf3[0];
+System_Init.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SaveE2PROMoniInfo = (WL9FM_SaveE2PROMoniInfo*)&tmpBuf4[0];
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):}WL9FM_SaveE2PROM1;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):} WL9FM_SaveE2PROM2;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):} WL9FM_SaveE2PROM3;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):} WL9FM_SaveE2PROMoniInfo;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern WL9FM_SaveE2PROM1		*SaveE2PROM1;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern WL9FM_SaveE2PROM2		*SaveE2PROM2;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern WL9FM_SaveE2PROM3		*SaveE2PROM3;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern struct WL9F_DATA_RTC 	WL9FM_RTC_Read;
+System_Init.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):extern struct WL9F_DATA_RTC 	WL9FM_RTC_Write;

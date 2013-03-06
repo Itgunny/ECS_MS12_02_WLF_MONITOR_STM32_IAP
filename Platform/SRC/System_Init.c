@@ -33,7 +33,7 @@ WL9FM_SaveE2PROM3		*SaveE2PROM3;
 
 WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-struct WL9FM_DATA_RTC   WL9FM_RTC_Write;
+struct WL9F_DATA_RTC   WL9FM_RTC_Write;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/

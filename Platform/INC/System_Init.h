@@ -289,8 +289,8 @@ extern WL9FM_SaveE2PROM2		*SaveE2PROM2;
 extern WL9FM_SaveE2PROM3		*SaveE2PROM3;
 extern WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-extern struct WL9FM_DATA_RTC 	WL9FM_RTC_Read;
-extern struct WL9FM_DATA_RTC 	WL9FM_RTC_Write;
+extern struct WL9F_DATA_RTC 	WL9FM_RTC_Read;
+extern struct WL9F_DATA_RTC 	WL9FM_RTC_Write;
 
 /* Exported functions ------------------------------------------------------- */
 extern void RCC_Configuration(void);
