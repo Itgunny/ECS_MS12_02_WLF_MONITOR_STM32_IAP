@@ -311,10 +311,11 @@ void RCC_Configuration(void)
   *          This parameter can be: ENABLE or DISABLE.
   * @retval None
   */
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4  , ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2  , ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4 , ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2  , ENABLE);
+	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1  , ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN2  , ENABLE);
 
@@ -342,12 +343,12 @@ void RCC_Configuration(void)
   *          This parameter can be: ENABLE or DISABLE.
   * @retval None
   */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8  , ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE);
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1  , ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 }
 
@@ -465,7 +466,10 @@ void GPIO_Configuration(void)
     GPIO_Init(SFLASH_PORT, &GPIO_InitStructure);
 	
 	//	TW8832 -> I2C2
-    GPIO_InitStructure.GPIO_Pin   = TW8832_I2C2_SCL | TW8832_I2C2_SDA;
+	//  GPIO로 I2C2 사용
+    //  Alternate Function 사용안함
+	#if 0
+	GPIO_InitStructure.GPIO_Pin   = TW8832_I2C2_SCL | TW8832_I2C2_SDA;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;   
   	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
@@ -473,6 +477,14 @@ void GPIO_Configuration(void)
     GPIO_Init(TW8832_I2C2_PORT, &GPIO_InitStructure);
 	GPIO_PinAFConfig(TW8832_I2C2_PORT, TW8832_I2C2_SCL_PinSource, GPIO_AF_I2C2);
 	GPIO_PinAFConfig(TW8832_I2C2_PORT, TW8832_I2C2_SDA_PinSource, GPIO_AF_I2C2);
+	#else
+	GPIO_InitStructure.GPIO_Pin   = TW8832_I2C2_SCL | TW8832_I2C2_SDA;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+  	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(TW8832_I2C2_PORT, &GPIO_InitStructure);
+	#endif
 
 	//	TW8832 SPI2 Control/Serial Flash(OSD)
     GPIO_InitStructure.GPIO_Pin   = TW8832_SFLASH_SPI2_CS | TW8832_SFLASH_SPI2_SCK | TW8832_SFLASH_SPI2_MISO | TW8832_SFLASH_SPI2_MOSI;
