@@ -2,6 +2,10 @@
 
 <userOverrides>
   <override>
+    <path>C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\WL9F_Display_IAP\Platform\INC\FM31X4.h</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
     <path>C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\WL9F_Display_IAP\Platform\INC\System_Init.h</path>
     <encoding>System</encoding>
   </override>

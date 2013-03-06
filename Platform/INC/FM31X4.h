@@ -27,7 +27,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 #pragma pack(1)
-struct WL9F_DATA_RTC
+typedef struct 
 {
     unsigned char   Year;
     unsigned char   Month;
@@ -36,11 +36,11 @@ struct WL9F_DATA_RTC
     unsigned char   Hour;
     unsigned char   Minute;
     unsigned char   Second;
-};
+} WL9F_DATA_RTC;
 #pragma pack()
 
 #pragma pack(1)
-struct WL9FM_DATA_EEPROM
+typedef struct 
 {
 	uint8_t         Brightness;
 	uint8_t         Language:4;
@@ -54,7 +54,7 @@ struct WL9FM_DATA_EEPROM
 	uint8_t         HourCounter;
 	uint32_t        Maintenance_ORG;
     
-};
+} WL9FM_DATA_EEPROM;
 #pragma pack()
 
 #pragma pack(1)
@@ -160,13 +160,13 @@ typedef struct
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern WL9FM_SaveE2PROM1			*SaveE2PROM1;
-extern WL9FM_SaveE2PROM2			*SaveE2PROM2;
-extern WL9FM_SaveE2PROM3			*SaveE2PROM3;
-extern WL9FM_SaveE2PROMoniInfo		*SaveE2PROMoniInfo;
+extern WL9FM_SaveE2PROM1		*SaveE2PROM1;
+extern WL9FM_SaveE2PROM2		*SaveE2PROM2;
+extern WL9FM_SaveE2PROM3		*SaveE2PROM3;
+extern WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-extern struct WL9F_DATA_RTC   	    WL9FM_RTC;
-extern struct WL9FM_DATA_EEPROM		WL9FM_DATASAVE;
+extern WL9F_DATA_RTC   	    	WL9FM_RTC;
+extern WL9FM_DATA_EEPROM		WL9FM_DATASAVE;
 
 /* Exported functions ------------------------------------------------------- */
 extern void EEPROM_PortChange(unsigned char dir);
@@ -197,8 +197,8 @@ extern unsigned char READ_RTC_Hour(void);
 extern unsigned char READ_RTC_Minute(void);
 extern unsigned char READ_RTC_Second(void);
 
-extern void WRITE_RTC(struct WL9F_DATA_RTC RTC_Data);
-extern void READ_RTC(struct WL9F_DATA_RTC *RTC_Data);
+extern void WRITE_RTC(WL9F_DATA_RTC RTC_Data);
+extern void READ_RTC(WL9F_DATA_RTC *RTC_Data);
 
 extern void InitEEPROM(void);
 

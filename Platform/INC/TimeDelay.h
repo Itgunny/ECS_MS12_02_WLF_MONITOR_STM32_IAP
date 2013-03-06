@@ -29,7 +29,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-struct WL9F_TIME_DATA
+typedef struct 
 {	
 	unsigned long  Cnt_1mSec;
 	unsigned short Flag_1mSec;
@@ -40,7 +40,7 @@ struct WL9F_TIME_DATA
 	unsigned short Flag_400mSec;        
 	unsigned short Flag_500mSec;        
 	unsigned short Flag_1Sec;
-};
+} WL9F_TIME_DATA;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -48,7 +48,7 @@ struct WL9F_TIME_DATA
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern struct WL9F_TIME_DATA WL9FM_TIME;
+extern WL9F_TIME_DATA WL9FM_TIME;
 
 /* Exported functions ------------------------------------------------------- */
 extern void TimeDelay_Decrement(void);
