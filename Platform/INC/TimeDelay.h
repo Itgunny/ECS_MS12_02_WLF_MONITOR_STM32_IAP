@@ -48,7 +48,7 @@ struct WL9F_TIME_DATA
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern struct WL9F_TIME_DATA WL9FM_TIME_DATA;
+extern struct WL9F_TIME_DATA WL9FM_TIME;
 
 /* Exported functions ------------------------------------------------------- */
 extern void TimeDelay_Decrement(void);

@@ -33,22 +33,22 @@ WL9FM_SaveE2PROM3		*SaveE2PROM3;
 
 WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-struct WL9F_DATA_RTC   WL9FM_RTC_Write;
+struct WL9F_DATA_RTC   	WL9FM_RTC;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 void Init_RTC(void)
 {
-    WL9FM_RTC_Write.Year   = 0;
-	WL9FM_RTC_Write.Month  = 1;
-	WL9FM_RTC_Write.Date   = 1;
-	WL9FM_RTC_Write.Day    = 1;
-	WL9FM_RTC_Write.Hour   = 12;
-	WL9FM_RTC_Write.Minute = 0;
-	WL9FM_RTC_Write.Second = 0;
+    WL9FM_RTC.Year   = 0;
+	WL9FM_RTC.Month  = 1;
+	WL9FM_RTC.Date   = 1;
+	WL9FM_RTC.Day    = 1;
+	WL9FM_RTC.Hour   = 12;
+	WL9FM_RTC.Minute = 0;
+	WL9FM_RTC.Second = 0;
 
-	WRITE_RTC(WL9FM_RTC_Write);
+	WRITE_RTC(WL9FM_RTC);
 }
 
 void InitE2PROM(void)
