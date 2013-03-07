@@ -825,16 +825,11 @@ void System_Initialize(void)
     GPIO_ResetBits(LCDPWR_PORT, LCDPWR_CTRL);  	//	LCD Power Enable 
                                                 //  Set   : LCD Power Enable 
                                                 //  Reset : LCD Power Disable	
-	// 	Exynos-4412에서 컨트롤 한다.
-	#if 0
-	//  BootLoader Bootting시에, BackLight는 All Off 상태로 만든다.
+
+	//  BootLoader Bootting시에, LCDBL는 Off 상태로 만든다.
     GPIO_ResetBits(LCDBL_PORT, LCDBL_CTRL);	    //	LCD BackLight Power On/Off (LCDBL_CTRL)
                                                	//  Set   : BackLight Power On
                                                	//  Reset : BackLight Power Off			
-                                               	
-    GPIO_ResetBits(LCDBL_PORT, LCDBL_PWM);		//	LCD BackLight PWM, Brightness Adjust (LCDBL_PWM)
-                                                //  Default Set                                               	
-	#endif                                               	
 
     GPIO_ResetBits(BUZZER_PORT, BUZZER_CTRL);	//	BUZZER Off
                                                 //  Set   : BUZZER On
