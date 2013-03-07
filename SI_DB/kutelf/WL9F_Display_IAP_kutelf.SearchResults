@@ -1,4 +1,0 @@
----- SDAIN Matches (3 in 2 files) ----
-FM31X4.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SDAIN;
-FM31X4.c (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\src):	SDAIN;
-FM31X4.h (c:\tools\iar systems\embedded workbench 6.5\workspace\wl9f_display_iap\platform\inc):#define SDAIN   				EEPROM_PortChange(0)
