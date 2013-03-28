@@ -19,7 +19,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "WL9F_Display_IAP.h" 
+#include "WL9F_Monitor_IAP.h" 
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -686,7 +686,7 @@ unsigned char READ_RTC_Second(void)
     return temp;
 }
 
-void WRITE_RTC(WL9F_DATA_RTC RTC_Data)
+void WRITE_RTC(WL9FM_DATA_RTC RTC_Data)
 {    
     WRITE_FM31xx_RTC_Companion(0x00, 0x02);
     
@@ -703,7 +703,7 @@ void WRITE_RTC(WL9F_DATA_RTC RTC_Data)
     WRITE_FM31xx_RTC_Companion(0x01, 0x00);
 }
 
-void READ_RTC(WL9F_DATA_RTC *RTC_Data)
+void READ_RTC(WL9FM_DATA_RTC *RTC_Data)
 {    
     WRITE_FM31xx_RTC_Companion(0x00, 0x01);
     

@@ -34,7 +34,7 @@
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
-#include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
+#include "WL9F_Monitor_IAP.h"	//	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -146,7 +146,7 @@ void SerialUpload(void)
 }
 
 /**
-  * @brief  Display the Main Menu on HyperTerminal
+  * @brief  Monitor the Main Menu on HyperTerminal
   * @param  None
   * @retval None
   */
@@ -171,7 +171,7 @@ void Main_Menu(void)
     SerialPutString("\r\n=                                                        =");
     SerialPutString("\r\n= In-Application Programming Application                 =");
     SerialPutString("\r\n=                                                        =");
-    SerialPutString("\r\n= Project      : WL9F Display (Monitor & Cluster)        =");
+    SerialPutString("\r\n= Project      : WL9F Monitor                            =");
     SerialPutString("\r\n= Environment  : EWARM v6.5, Library v1.0.0              ="); 
     SerialPutString("\r\n=                STM32F4xx Standard Peripherals Library  =");	
     SerialPutString("\r\n=                                                        =");

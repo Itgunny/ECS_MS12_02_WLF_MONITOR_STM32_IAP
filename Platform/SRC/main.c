@@ -26,7 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "menu.h"
 #include "stm324xg_eval.h"
-#include "WL9F_Display_IAP.h" //	++, --, kutelf, 130222
+#include "WL9F_Monitor_IAP.h" //	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -62,7 +62,7 @@ int main(void)
 	{
     	/* Execute the IAP driver in order to reprogram the Flash */
     	IAP_Init();
-    	/* Display main menu */
+    	/* Monitor main menu */
     	Main_Menu();
 	}	
 	#else
@@ -74,7 +74,7 @@ int main(void)
   	{ 
     	/* Execute the IAP driver in order to reprogram the Flash */
     	IAP_Init();
-    	/* Display main menu */
+    	/* Monitor main menu */
     	Main_Menu();
   	}
 	#endif

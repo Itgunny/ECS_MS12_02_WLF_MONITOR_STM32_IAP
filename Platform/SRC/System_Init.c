@@ -6,10 +6,10 @@
   * @date    02/22/2013
   * @brief   System_Init.c module
   *
-  * Project Name       : WL9F Display IAP
+  * Project Name       : WL9F Monitor IAP
   * Project Enviroment : IAREmbedded Workbench for ARM 6.5x 
   *                      STM32F407ZGT6 Firmware Library
-  * Project Workspace  : WL9F_Display_IAP
+  * Project Workspace  : WL9F_Monitor_IAP
   * MCU Type           : STM32F407ZGT6
   *
   * TAEHA MECHATRONICS Co., Ltd (http://www.taeha.co.kr)				
@@ -19,7 +19,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "WL9F_Display_IAP.h"	
+#include "WL9F_Monitor_IAP.h"	
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,7 +33,7 @@ WL9FM_SaveE2PROM3		*SaveE2PROM3;
 
 WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-WL9F_DATA_RTC   	    WL9FM_RTC;
+WL9FM_DATA_RTC   	    WL9FM_RTC;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
