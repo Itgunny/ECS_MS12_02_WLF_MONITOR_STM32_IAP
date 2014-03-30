@@ -29,6 +29,7 @@
 #include "common.h"
 #include "ymodem.h"
 #include "string.h"
+#include "M25PXX.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -36,6 +37,15 @@
 /* Private variables ---------------------------------------------------------*/
 extern uint8_t FileName[];
 
+
+u32 FlashDestination = APPLICATION_ADDRESS; /* Flash user program offset */
+u16 PageSize = 0x400;
+u32 EraseCounter = 0x0;
+u32 NbrOfPage = 0;
+FLASH_Status FLASHStatus = FLASH_COMPLETE;
+u32 RamSource;
+extern u8 tab_1024[1024];
+extern u16 Index_Down;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -670,5 +680,29 @@ uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t siz
 /**
   * @}
   */
+
+u32 sflash_address;
+
+u32 index_Down;
+
+s32 Serial_Flash_Down(void)
+{
+	u8 i,j;
+	
+	FLASH_If_Erase(APPLICATION_ADDRESS);
+
+	for(i=0;i<Index_Down+1;i++)
+	{
+		sflash_address = 0x10000 + (i*4<<8);
+		SPI_FLASH_BufferRead(tab_1024,sflash_address,1024);  //1024 read and 4 bytes write 1024/4 =
+
+		RamSource =(u32)&tab_1024;
+
+		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
+			
+	}
+	return 1;
+}
+
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

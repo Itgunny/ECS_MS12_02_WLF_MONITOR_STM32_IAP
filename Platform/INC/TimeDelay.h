@@ -6,10 +6,10 @@
   * @date    02/22/2013
   * @brief   Header for TimeDelay.c module
   *
-  * Project Name       : WL9F Monitor IAP
+  * Project Name       : WL9F Display IAP
   * Project Enviroment : IAREmbedded Workbench for ARM 6.5x 
   *                      STM32F407ZGT6 Firmware Library
-  * Project Workspace  : WL9F_Monitor_IAP
+  * Project Workspace  : WL9F_Display_IAP
   * MCU Type           : STM32F407ZGT6
   *
   * TAEHA MECHATRONICS Co., Ltd (http://www.taeha.co.kr)				
@@ -23,7 +23,7 @@
 #define __TimeDelay_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "WL9F_Monitor_IAP.h"	
+#include "WL9F_Display_IAP.h"	
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -40,7 +40,7 @@ typedef struct
 	unsigned short Flag_400mSec;        
 	unsigned short Flag_500mSec;        
 	unsigned short Flag_1Sec;
-} WL9FM_TIME_DATA;
+} WL9F_TIME_DATA;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -48,7 +48,7 @@ typedef struct
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern WL9FM_TIME_DATA WL9FM_TIME;
+extern WL9F_TIME_DATA WL9FM_TIME;
 
 /* Exported functions ------------------------------------------------------- */
 extern void TimeDelay_Decrement(void);

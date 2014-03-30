@@ -26,7 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "menu.h"
 #include "stm324xg_eval.h"
-#include "WL9F_Monitor_IAP.h" //	++, --, kutelf, 130222
+#include "WL9F_Display_IAP.h" //	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -35,6 +35,12 @@
 extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 
+u32 download_pattern;
+
+u8 tmp1[6];
+u8 tmp[4]={0xa1,0xb2,0xc3,0xd4};
+
+u16 Index_Down;
 /* Private function prototypes -----------------------------------------------*/
 static void IAP_Init(void);
 
@@ -54,15 +60,30 @@ int main(void)
 	System_Configuration();	//	GPIO Setting
 	System_Initialize();	//	System Initialize
 	FM3164_Watchdog_Init(0x00);
+		
+	M25P32_Init();	
+	
+	memset(tmp1,0xff,6);
+	
+	//SPI_FLASH_SectorErase(0x3f0000);
+	
+	//SPI_FLASH_PageWrite(tmp,0x3f0000,4);
+	
+	SPI_FLASH_BufferRead(tmp1,0x3f0000,6);
 
+	download_pattern = (tmp1[3] << 24) | (tmp1[2] << 16) | (tmp1[1] << 8) | tmp1[0]; 
+
+	Index_Down = (tmp1[5] << 8) | tmp1[4]; 
+
+	SPI_FLASH_SectorErase(0x3f0000);		
 	//	FW_UPDATE Pin Check -> if Low  = IAP Running
 	//							  High = APP Running
 	#if 1
-	if (GPIO_ReadInputDataBit(FW_UPDATE_PORT, FW_UPDATE) == 0x00)
+	if (download_pattern == 0xa1b2c3d4)
 	{
     	/* Execute the IAP driver in order to reprogram the Flash */
     	IAP_Init();
-    	/* Monitor main menu */
+    	/* Display main menu */
     	Main_Menu();
 	}	
 	#else
@@ -74,7 +95,7 @@ int main(void)
   	{ 
     	/* Execute the IAP driver in order to reprogram the Flash */
     	IAP_Init();
-    	/* Monitor main menu */
+    	/* Display main menu */
     	Main_Menu();
   	}
 	#endif

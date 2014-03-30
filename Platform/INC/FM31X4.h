@@ -6,10 +6,10 @@
   * @date    02/22/2013
   * @brief   Header for FM31X4.c module
   *
-  * Project Name       : WL9F Monitor IAP
+  * Project Name       : WL9F Display IAP
   * Project Enviroment : IAREmbedded Workbench for ARM 6.5x 
   *                      STM32F407ZGT6 Firmware Library
-  * Project Workspace  : WL9F_Monitor_IAP
+  * Project Workspace  : WL9F_Display_IAP
   * MCU Type           : STM32F407ZGT6
   *
   * TAEHA MECHATRONICS Co., Ltd (http://www.taeha.co.kr)				
@@ -23,7 +23,7 @@
 #define __FM31X4_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "WL9F_Monitor_IAP.h" 
+#include "WL9F_Display_IAP.h" 
 
 /* Private typedef -----------------------------------------------------------*/
 #pragma pack(1)
@@ -36,7 +36,7 @@ typedef struct
     unsigned char   Hour;
     unsigned char   Minute;
     unsigned char   Second;
-} WL9FM_DATA_RTC;
+} WL9F_DATA_RTC;
 #pragma pack()
 
 #pragma pack(1)
@@ -165,7 +165,7 @@ extern WL9FM_SaveE2PROM2		*SaveE2PROM2;
 extern WL9FM_SaveE2PROM3		*SaveE2PROM3;
 extern WL9FM_SaveE2PROMoniInfo	*SaveE2PROMoniInfo;
 
-extern WL9FM_DATA_RTC  	    	WL9FM_RTC;
+extern WL9F_DATA_RTC   	    	WL9FM_RTC;
 extern WL9FM_DATA_EEPROM		WL9FM_DATASAVE;
 
 /* Exported functions ------------------------------------------------------- */
@@ -197,8 +197,8 @@ extern unsigned char READ_RTC_Hour(void);
 extern unsigned char READ_RTC_Minute(void);
 extern unsigned char READ_RTC_Second(void);
 
-extern void WRITE_RTC(WL9FM_DATA_RTC RTC_Data);
-extern void READ_RTC(WL9FM_DATA_RTC *RTC_Data);
+extern void WRITE_RTC(WL9F_DATA_RTC RTC_Data);
+extern void READ_RTC(WL9F_DATA_RTC *RTC_Data);
 
 extern void InitEEPROM(void);
 

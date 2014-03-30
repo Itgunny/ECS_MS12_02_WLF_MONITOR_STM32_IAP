@@ -34,7 +34,7 @@
 #include "flash_if.h"
 #include "menu.h"
 #include "ymodem.h"
-#include "WL9F_Monitor_IAP.h"	//	++, --, kutelf, 130222
+#include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -66,7 +66,11 @@ void SerialDownload(void)
   int32_t Size = 0;
 
   SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
-  Size = Ymodem_Receive(&tab_1024[0]);
+
+  //Size = Ymodem_Receive(&tab_1024[0]);
+
+  Size = Serial_Flash_Down();
+  
   if (Size > 0)
   {
 	//	++, kutelf, 130222
@@ -146,7 +150,7 @@ void SerialUpload(void)
 }
 
 /**
-  * @brief  Monitor the Main Menu on HyperTerminal
+  * @brief  Display the Main Menu on HyperTerminal
   * @param  None
   * @retval None
   */
@@ -171,7 +175,7 @@ void Main_Menu(void)
     SerialPutString("\r\n=                                                        =");
     SerialPutString("\r\n= In-Application Programming Application                 =");
     SerialPutString("\r\n=                                                        =");
-    SerialPutString("\r\n= Project      : WL9F Monitor                            =");
+    SerialPutString("\r\n= Project      : WL9F Display (Monitor & Cluster)        =");
     SerialPutString("\r\n= Environment  : EWARM v6.5, Library v1.0.0              ="); 
     SerialPutString("\r\n=                STM32F4xx Standard Peripherals Library  =");	
     SerialPutString("\r\n=                                                        =");
@@ -194,6 +198,9 @@ void Main_Menu(void)
   while (1)
   {
 	//	++, kutelf, 130222
+
+	SerialDownload();
+	
 	#if 0
     SerialPutString("\r\n================== Main Menu ============================\r\n\n");
     SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");

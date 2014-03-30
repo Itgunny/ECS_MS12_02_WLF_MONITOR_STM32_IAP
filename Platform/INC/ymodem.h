@@ -58,7 +58,9 @@
 int32_t Ymodem_Receive (uint8_t *);
 uint8_t Ymodem_Transmit (uint8_t *,const  uint8_t* , uint32_t );
 
-#endif  /* __YMODEM_H_ */
+
+s32 Serial_Flash_Down(void);
+#endif  /* __;YMODEM_H_ */
 
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
