@@ -12,7 +12,7 @@
           
           
           
-        <Column0>313</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>976</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
     <Build><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build><TerminalIO/><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1861</ColumnWidth1></Debug-Log></Static>
     <Windows>
@@ -35,14 +35,14 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Platform\SRC\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1</YPos2><SelStart2>1895</SelStart2><SelEnd2>1895</SelEnd2></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1253</YPos2><SelStart2>49927</SelStart2><SelEnd2>49927</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1253</YPos2><SelStart2>49927</SelStart2><SelEnd2>49927</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>396</YPos2><SelStart2>15136</SelStart2><SelEnd2>15136</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Platform\SRC\M25PXX.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>272</YPos2><SelStart2>9410</SelStart2><SelEnd2>9410</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Platform\SRC\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>32</YPos2><SelStart2>2309</SelStart2><SelEnd2>2309</SelEnd2></Tab><ActiveTab>3</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0029bdc0><key>iaridepm.enu1</key></Toolbar-0029bdc0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>750</Bottom><Right>387</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>205</yscreen><sizeHorzCX>104167</sizeHorzCX><sizeHorzCY>205411</sizeHorzCY><sizeVertCX>202604</sizeVertCX><sizeVertCY>753507</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>203</Bottom><Right>1922</Right><x>-2</x><y>-2</y><xscreen>1924</xscreen><yscreen>205</yscreen><sizeHorzCX>1002083</sizeHorzCX><sizeHorzCY>205411</sizeHorzCY><sizeVertCX>104167</sizeVertCX><sizeVertCY>205411</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-01d02388><key>iaridepm.enu1</key></Toolbar-01d02388></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>763</Bottom><Right>1050</Right><x>-2</x><y>-2</y><xscreen>540</xscreen><yscreen>616</yscreen><sizeHorzCX>291262</sizeHorzCX><sizeHorzCY>593449</sizeHorzCY><sizeVertCX>567422</sizeVertCX><sizeVertCY>736994</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>230</Bottom><Right>1856</Right><x>-2</x><y>-2</y><xscreen>1858</xscreen><yscreen>232</yscreen><sizeHorzCX>1002157</sizeHorzCX><sizeHorzCY>223507</sizeHorzCY><sizeVertCX>291262</sizeVertCX><sizeVertCY>593449</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

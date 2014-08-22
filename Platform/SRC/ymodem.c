@@ -701,6 +701,7 @@ s32 Serial_Flash_Down(void)
 		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
 			
 	}
+	SPI_FLASH_SectorErase(0x3f0000);
 	return 1;
 }
 

@@ -75,7 +75,7 @@ int main(void)
 
 	Index_Down = (tmp1[5] << 8) | tmp1[4]; 
 
-	SPI_FLASH_SectorErase(0x3f0000);		
+	//SPI_FLASH_SectorErase(0x3f0000);		
 	//	FW_UPDATE Pin Check -> if Low  = IAP Running
 	//							  High = APP Running
 	#if 1

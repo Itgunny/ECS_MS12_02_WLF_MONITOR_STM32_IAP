@@ -70,7 +70,7 @@ void SerialDownload(void)
   //Size = Ymodem_Receive(&tab_1024[0]);
 
   Size = Serial_Flash_Down();
-  
+  SPI_FLASH_SectorErase(0x3f0000);	
   if (Size > 0)
   {
 	//	++, kutelf, 130222
