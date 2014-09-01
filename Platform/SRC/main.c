@@ -30,19 +30,71 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+//  KeySwitch Matrix -> GPIO 
+#define 	KeySCAN0          				GPIO_Pin_0	//	Key Matrix 00
+#define 	KeySCAN1          				GPIO_Pin_1  //	Key Matrix 01
+#define 	KeySCAN2          				GPIO_Pin_2 	//	Key Matrix 02
+#define 	KeyInput0          				GPIO_Pin_10 //	Key Matrix 10
+#define 	KeyInput1          				GPIO_Pin_11 //	Key Matrix 11
+#define 	KeyInput2          				GPIO_Pin_12 //	Key Matrix 12
+#define 	KeyInput3          				GPIO_Pin_13 //	Key Matrix 13
+#define 	KeyInput4         				GPIO_Pin_14 //	Key Matrix 14
+#define 	KeyInput5          				GPIO_Pin_15 //	Key Matrix 15
+#define 	KeySWXX_PORT       				GPIOF
+
+#define MAXSCAN 	            3           //  Scan Switch 
+#define MAXSWITCH               6           //  Input Switch 
+#define MAXINPUT               	6           //  Input Switch 
+
+
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+GPIO_TypeDef*  KEYSWITCH_SCANPORT[MAXSCAN]	=   {  
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT, 
+                                            };
+const uint16_t KEYSWITCH_SCAN[MAXSCAN]  =   { 
+                                                KeySCAN0, 
+                                                KeySCAN1, 
+                                                KeySCAN2, 
+                                            };
+GPIO_TypeDef*  KEYSWITCH_INPUTPORT[MAXINPUT]	=   {  
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT, 
+                                                KeySWXX_PORT,
+                                                KeySWXX_PORT,                                                
+                                            };
+const uint16_t KEYSWITCH_INPUT[MAXINPUT]  =   { 
+                                                KeyInput0, 
+                                                KeyInput1, 
+                                                KeyInput2, 
+                                                KeyInput3,
+                                                KeyInput4,
+                                                KeyInput5,
+                                            };
+
+u8 fatoryinit_start_code[4]={0x4d,0x3c,0x2b,0x1a};
+u8 fatoryinit_end_code[4]={0x8d,0x7c,0x6b,0x5a};
+
+u8 FactoryInitFlag = 0;
+u8 UpdateFlag = 0;
 extern pFunction Jump_To_Application;
 extern uint32_t JumpAddress;
 
 u32 download_pattern;
-
+u32 FactoryInit_Pattern;
 u8 tmp1[6];
 u8 tmp[4]={0xa1,0xb2,0xc3,0xd4};
 
 u16 Index_Down;
 /* Private function prototypes -----------------------------------------------*/
 static void IAP_Init(void);
+static void Key_Init(void);
+static uint32_t KeySwitch_Process(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -54,7 +106,9 @@ static void IAP_Init(void);
 int main(void)
 {
   	/* Unlock the Flash Program Erase controller */
+	
   	FLASH_If_Init();
+	
 
 	//	++, kutelf, 130222
 	System_Configuration();	//	GPIO Setting
@@ -62,58 +116,79 @@ int main(void)
 	FM3164_Watchdog_Init(0x00);
 		
 	M25P32_Init();	
-	
+	Key_Init();
 	memset(tmp1,0xff,6);
 	
 	//SPI_FLASH_SectorErase(0x3f0000);
 	
 	//SPI_FLASH_PageWrite(tmp,0x3f0000,4);
-	
-	SPI_FLASH_BufferRead(tmp1,0x3f0000,6);
 
-	download_pattern = (tmp1[3] << 24) | (tmp1[2] << 16) | (tmp1[1] << 8) | tmp1[0]; 
+	FactoryInitFlag = 0;
+	UpdateFlag = 0;
 
-	Index_Down = (tmp1[5] << 8) | tmp1[4]; 
+	SPI_FLASH_BufferRead(tmp1,0x3e0000,6);
 
-	//SPI_FLASH_SectorErase(0x3f0000);		
-	//	FW_UPDATE Pin Check -> if Low  = IAP Running
-	//							  High = APP Running
-	#if 1
-	if (download_pattern == 0xa1b2c3d4)
+	FactoryInit_Pattern = (tmp1[3] << 24) | (tmp1[2] << 16) | (tmp1[1] << 8) | tmp1[0]; 
+
+	if(FactoryInit_Pattern == 0x1a2b3c4d)
 	{
-    	/* Execute the IAP driver in order to reprogram the Flash */
-    	IAP_Init();
-    	/* Display main menu */
-    	Main_Menu();
-	}	
-	#else
-	/* Initialize Key Button mounted on STM324xG-EVAL board */
-  	STM_EVAL_PBInit(BUTTON_KEY, BUTTON_MODE_GPIO);
+		SPI_FLASH_BufferRead(tmp1,0x3d0000,6);
+		
+		Index_Down = (tmp1[5] << 8) | tmp1[4]; 
+		
+		FactoryInitFlag = 1;
+		/* Execute the IAP driver in order to reprogram the Flash */
+		IAP_Init();
+		/* Display main menu */
+		Main_Menu();	
+	}
+	else
+	{
+		if(KeySwitch_Process() == 0x1C && FactoryInit_Pattern == 0x5a6b7c8d) 	// Factory Init
+		{
+			SPI_FLASH_BufferRead(tmp1,0x3d0000,6);
+			
+			Index_Down = (tmp1[5] << 8) | tmp1[4]; 
+			
+			FactoryInitFlag = 1;
+			/* Execute the IAP driver in order to reprogram the Flash */
+			IAP_Init();
+			/* Display main menu */
+			Main_Menu();			
+		}
+		else
+		{
+			SPI_FLASH_BufferRead(tmp1,0x3f0000,6);
+							
+			download_pattern = (tmp1[3] << 24) | (tmp1[2] << 16) | (tmp1[1] << 8) | tmp1[0]; 
+		
+			Index_Down = (tmp1[5] << 8) | tmp1[4]; 
+			
+			if (download_pattern == 0xa1b2c3d4)
+			{
+				UpdateFlag = 1;
+				/* Execute the IAP driver in order to reprogram the Flash */
+				IAP_Init();
+				/* Display main menu */
+				Main_Menu();
+			}	
 
-  	/* Test if Key push-button on STM324xG-EVAL Board is pressed */
-  	if (STM_EVAL_PBGetState(BUTTON_KEY) == 0x00)
-  	{ 
-    	/* Execute the IAP driver in order to reprogram the Flash */
-    	IAP_Init();
-    	/* Display main menu */
-    	Main_Menu();
-  	}
-	#endif
-	//	--, kutelf, 130222
-  	/* Keep the user application running */
-  	else
-  	{
-    	/* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
-    	if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
-    	{ 
-      		/* Jump to user application */
-      		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-      		Jump_To_Application = (pFunction) JumpAddress;
-      		/* Initialize user application's Stack Pointer */
-      		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-      		Jump_To_Application();
-    	}
-  	}
+		}
+
+	}
+	
+	
+	/* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
+	if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+	{ 
+  		/* Jump to user application */
+  		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+  		Jump_To_Application = (pFunction) JumpAddress;
+  		/* Initialize user application's Stack Pointer */
+  		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+  		Jump_To_Application();
+	}
+  	
 
   	while (1)
   	{}
@@ -127,6 +202,7 @@ int main(void)
 void IAP_Init(void)
 {
  USART_InitTypeDef USART_InitStructure;
+
 
   /* USART resources configuration (Clock, GPIO pins and USART registers) ----*/
   /* USART configured as follow:
@@ -145,7 +221,62 @@ void IAP_Init(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
   STM_EVAL_COMInit(COM1, &USART_InitStructure);
+
+  
 }
+
+void Key_Init(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	 //	KeySwitch Matrix -> GPIO Output
+	GPIO_InitStructure.GPIO_Pin   = KeySCAN0 | KeySCAN1 | KeySCAN2;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(KeySWXX_PORT, &GPIO_InitStructure);
+
+	//	KeySwitch Matrix -> GPIO Input
+	GPIO_InitStructure.GPIO_Pin   = KeyInput0 | KeyInput1 | KeyInput2 | KeyInput3 | KeyInput4 | KeyInput5;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;   
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(KeySWXX_PORT, &GPIO_InitStructure);
+}
+uint32_t KeySwitch_Process(void)
+{
+	uint8_t i, j, k;
+	uint32_t New_Value;
+	
+
+	GPIO_WriteBit(KEYSWITCH_SCANPORT[0], KEYSWITCH_SCAN[0], Bit_RESET); //R
+	GPIO_WriteBit(KEYSWITCH_SCANPORT[1], KEYSWITCH_SCAN[1], Bit_SET);
+	GPIO_WriteBit(KEYSWITCH_SCANPORT[2], KEYSWITCH_SCAN[2], Bit_SET);					
+	
+	New_Value = 0;
+	
+	//  KeySwitch Press Check
+	//Delay(100);
+	
+	for (i = 0; i < MAXSWITCH; i++)
+	{
+		k = 0;    
+		k = GPIO_ReadInputDataBit(KEYSWITCH_INPUTPORT[i], KEYSWITCH_INPUT[i]); //  Read KeySwitch Input 
+
+		if (k == 0) j = 1;    
+		else        j = 0;
+
+		New_Value <<= 1;    //  1Bit씩 Shitf하여 총 5Bit를 만든다.
+		New_Value  += j;    //  0 or 1
+	}
+
+
+	return New_Value;
+    
+}
+
 
 #ifdef USE_FULL_ASSERT
 /**

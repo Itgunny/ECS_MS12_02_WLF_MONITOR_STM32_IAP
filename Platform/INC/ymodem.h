@@ -60,6 +60,8 @@ uint8_t Ymodem_Transmit (uint8_t *,const  uint8_t* , uint32_t );
 
 
 s32 Serial_Flash_Down(void);
+s32 Serial_Flash_FactoryInit_Down(void);
+
 #endif  /* __;YMODEM_H_ */
 
 

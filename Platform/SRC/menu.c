@@ -40,6 +40,11 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern u32 download_pattern;
+extern u32 FactoryInit_Pattern;
+extern u8 FactoryInitFlag;
+extern u8 UpdateFlag;
+
 pFunction Jump_To_Application;
 uint32_t JumpAddress;
 __IO uint32_t FlashProtection = 0;
@@ -68,9 +73,17 @@ void SerialDownload(void)
   SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
 
   //Size = Ymodem_Receive(&tab_1024[0]);
+  
+  if(FactoryInitFlag == 1)
+  {
+	  Size = Serial_Flash_FactoryInit_Down();
+  }
+  else if(UpdateFlag == 1)
+  {
+	Size = Serial_Flash_Down();
+  }
 
-  Size = Serial_Flash_Down();
-  SPI_FLASH_SectorErase(0x3f0000);	
+  
   if (Size > 0)
   {
 	//	++, kutelf, 130222

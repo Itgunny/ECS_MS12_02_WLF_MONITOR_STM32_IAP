@@ -46,6 +46,8 @@ FLASH_Status FLASHStatus = FLASH_COMPLETE;
 u32 RamSource;
 extern u8 tab_1024[1024];
 extern u16 Index_Down;
+extern u8 fatoryinit_start_code[4];
+extern u8 fatoryinit_end_code[4];
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -703,6 +705,34 @@ s32 Serial_Flash_Down(void)
 	}
 	SPI_FLASH_SectorErase(0x3f0000);
 	return 1;
+
+}
+
+s32 Serial_Flash_FactoryInit_Down(void)
+{
+	u8 i,j;
+	
+	SPI_FLASH_SectorErase(0x3e0000);
+	
+	SPI_FLASH_BufferWrite(fatoryinit_start_code,0x3e0000,4);
+  
+	FLASH_If_Erase(APPLICATION_ADDRESS);
+	
+	
+	for(i=0;i<Index_Down+1;i++)
+	{
+		sflash_address = 0xA0000 + (i*4<<8);
+		SPI_FLASH_BufferRead(tab_1024,sflash_address,1024);  //1024 read and 4 bytes write 1024/4 =
+
+		RamSource =(u32)&tab_1024;
+
+		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
+			
+	}
+	SPI_FLASH_SectorErase(0x3e0000);
+	SPI_FLASH_BufferWrite(fatoryinit_end_code,0x3e0000,4);
+	return 1;
+
 }
 
 
