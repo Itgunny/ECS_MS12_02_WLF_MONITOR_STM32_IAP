@@ -20,6 +20,17 @@ MixedMode=1
 [watch_formats]
 Fmt0={W}42:FactoryInit_Pattern	4	0
 Fmt1={W}42:TempKeyValue	4	0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.215.2" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.79.11" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.732.2" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.722.2" 0 0 1 "" 0 "" 0
+Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.133.2" 0 0 1 "" 0 "" 0
+Count=7
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -27,6 +38,13 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Aliases]
+A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\arm\inc\c\DLib_Product_string.h" ""
+A1=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
+A2=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A3=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Platform\SRC\main.c" ""
+Count=4
+SuppressDialog=1
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -35,17 +53,3 @@ Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.215.2" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.79.11" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
-Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.732.2" 0 0 1 "" 0 "" 0
-Bp5=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.722.2" 0 0 1 "" 0 "" 0
-Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.133.2" 0 0 1 "" 0 "" 0
-Count=7
-[Aliases]
-Count=0
-SuppressDialog=0
