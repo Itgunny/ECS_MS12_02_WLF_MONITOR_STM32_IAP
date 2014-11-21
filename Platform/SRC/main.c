@@ -30,17 +30,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-//  KeySwitch Matrix -> GPIO 
-#define 	KeySCAN0          				GPIO_Pin_0	//	Key Matrix 00
-#define 	KeySCAN1          				GPIO_Pin_1  //	Key Matrix 01
-#define 	KeySCAN2          				GPIO_Pin_2 	//	Key Matrix 02
-#define 	KeyInput0          				GPIO_Pin_10 //	Key Matrix 10
-#define 	KeyInput1          				GPIO_Pin_11 //	Key Matrix 11
-#define 	KeyInput2          				GPIO_Pin_12 //	Key Matrix 12
-#define 	KeyInput3          				GPIO_Pin_13 //	Key Matrix 13
-#define 	KeyInput4         				GPIO_Pin_14 //	Key Matrix 14
-#define 	KeyInput5          				GPIO_Pin_15 //	Key Matrix 15
-#define 	KeySWXX_PORT       				GPIOF
 
 #define MAXSCAN 	            3           //  Scan Switch 
 #define MAXSWITCH               6           //  Input Switch 

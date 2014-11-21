@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-848390744
+Checksum=-820681773
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -70,18 +70,28 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.164.3" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.164.3" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.709.1" 0 0 1 "" 0 "" 0
-Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.74.3" 0 0 1 "" 0 "" 0
-Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.694.2" 0 0 1 "" 0 "" 0
-Bp5=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.704.2" 0 0 1 "" 0 "" 0
-Count=6
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.171.2" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.171.2" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.715.2" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.77.3" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.694.2" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.706.2" 0 0 1 "" 0 "" 0
+Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\M25PXX.c}.363.2" 0 0 1 "" 0 "" 0
+Count=7
 [Aliases]
-A0=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
-A1=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
-A2=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\FM31X4.c" ""
-A3=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\flash_if.c" ""
-A4=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\main.c" ""
-Count=5
-SuppressDialog=0
+A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\[140228] WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A1=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\[140801] WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
+A2=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\[140801] WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A3=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
+A4=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A5=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\FM31X4.c" ""
+A6=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\flash_if.c" ""
+A7=_ "C:\Tools\IAR Systems\WL9F\WL9F Monitor - STM32_IAP\Platform\SRC\main.c" ""
+A8=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
+A9=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A10=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Platform\SRC\FM31X4.c" ""
+A11=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Platform\SRC\M25PXX.c" ""
+A12=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Platform\SRC\flash_if.c" ""
+A13=_ "C:\Tools\WL9F\WL9F Monitor - STM32_IAP -ST_Update\Platform\SRC\main.c" ""
+Count=14
+SuppressDialog=1
