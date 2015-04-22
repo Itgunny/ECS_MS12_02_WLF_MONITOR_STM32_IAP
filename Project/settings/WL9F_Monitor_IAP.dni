@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=430202777
+Checksum=-1563833464
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -44,8 +44,7 @@ Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 
 Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
 Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.732.2" 0 0 1 "" 0 "" 0
 Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.722.2" 0 0 1 "" 0 "" 0
-Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.133.2" 0 0 1 "" 0 "" 0
-Count=7
+Count=6
 [Aliases]
 A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\arm\inc\c\DLib_Product_string.h" ""
 A1=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""

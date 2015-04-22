@@ -33,6 +33,7 @@
 #include "System_Init.h"
 #include "TimeDelay.h"
 #include "FM31X4.h"
+#include "M25PXX.h"
 
 
 /* Exported types ------------------------------------------------------------*/
