@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1563833464
+Checksum=-252815093
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -18,8 +18,9 @@ ShowArgs=0
 [Disassembly]
 MixedMode=1
 [watch_formats]
-Fmt0={W}42:FactoryInit_Pattern	4	0
-Fmt1={W}42:TempKeyValue	4	0
+Fmt0={W}42:CAMSig_1	1	0
+Fmt1={W}42:FactoryInit_Pattern	4	0
+Fmt2={W}42:TempKeyValue	4	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -38,17 +39,19 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.215.2" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.79.11" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.735.1" 0 0 1 "" 0 "" 0
-Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.732.2" 0 0 1 "" 0 "" 0
-Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.722.2" 0 0 1 "" 0 "" 0
-Count=6
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.215.2" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.79.11" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$TOOLKIT_DIR$\inc\c}.735.1" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$TOOLKIT_DIR$\inc\c}.735.1" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.732.2" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.722.2" 0 0 1 "" 0 "" 0
+Bp6=_ 0 "EMUL_CODE" "0xBD10D1D4" 0 0 1 "" 0 "" 0
+Count=7
 [Aliases]
 A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\arm\inc\c\DLib_Product_string.h" ""
-A1=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
-A2=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
-A3=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Platform\SRC\main.c" ""
-Count=4
+A1=_ "C:\Tools\IAR Systems\Workspace_WL9F\WL_F_Monitor_IAP_TEST\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A2=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""
+A3=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
+A4=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Platform\SRC\main.c" ""
+Count=5
 SuppressDialog=1

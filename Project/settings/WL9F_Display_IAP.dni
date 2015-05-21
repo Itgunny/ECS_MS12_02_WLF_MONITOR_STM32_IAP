@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=2070134516
+Checksum=-820681773
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -71,11 +71,10 @@ Exclusions=
 mode=0
 [Breakpoints2]
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.715.2" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\menu.c}.77.3" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.694.2" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.706.2" 0 0 1 "" 0 "" 0
-Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\M25PXX.c}.363.2" 0 0 1 "" 0 "" 0
-Count=5
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.694.2" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\ymodem.c}.706.2" 0 0 1 "" 0 "" 0
+Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\M25PXX.c}.363.2" 0 0 1 "" 0 "" 0
+Count=4
 [Aliases]
 A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\[140228] WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
 A1=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\WorkSpace\[140801] WL9F Monitor - STM32_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c" ""

@@ -690,20 +690,17 @@ u32 index_Down;
 s32 Serial_Flash_Down(void)
 {
 	u8 i,j;
-	u8 progressbarValue;
+	
 	FLASH_If_Erase(APPLICATION_ADDRESS);
+
 	for(i=0;i<Index_Down+1;i++)
 	{
-                progressbarValue = (u32) ((i * 33.0) / Index_Down) + 0x76;
-                SetProgressLineOSD(progressbarValue);
-                
 		sflash_address = 0x10000 + (i*4<<8);
 		SPI_FLASH_BufferRead(tab_1024,sflash_address,1024);  //1024 read and 4 bytes write 1024/4 =
 
 		RamSource =(u32)&tab_1024;
 
 		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
-                
 			
 	}
 	SPI_FLASH_SectorErase(0x3f0000);
@@ -737,6 +734,7 @@ s32 Serial_Flash_FactoryInit_Down(void)
 	return 1;
 
 }
+
 
 
 /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

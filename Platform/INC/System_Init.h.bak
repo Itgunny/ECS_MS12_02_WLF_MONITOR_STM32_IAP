@@ -105,7 +105,7 @@
 #define		TW8832_I2C2_PORT				GPIOB
 //	--, kutelf, 140801
 
-//	LAMP GPIO (Serial Data -> Parallel Data)
+//	LAMP GPIO (Serial Data -> Parallel Data
 //	74HC595
 #define		LAMP_CLR						GPIO_Pin_12
 #define		LAMP_SLCLK						GPIO_Pin_13
@@ -265,6 +265,6 @@ extern void System_Configuration(void);
 extern void GPIO_Configuration_NotUsed(void);
 extern void System_Initialize(void);
 extern void InitE2PROM(void);
-extern void Camera_IO_Init(void);
+
 #endif /* __SYSTEM_INIT_H */
 

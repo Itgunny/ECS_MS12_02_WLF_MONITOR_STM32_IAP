@@ -945,6 +945,12 @@
         <name>$PROJ_DIR$\..\Platform\INC\FM31X4.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Platform\INC\GPIO_Control.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\INC\LCD_Control.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Platform\INC\M25PXX.h</name>
       </file>
       <file>
@@ -969,6 +975,12 @@
         <name>$PROJ_DIR$\..\Platform\INC\TimeDelay.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Platform\INC\TW8816_Control.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\INC\TW8816_OSD.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Platform\INC\WL9F_Monitor_IAP.h</name>
       </file>
       <file>
@@ -985,6 +997,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\FM31X4.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\SRC\GPIO_Control.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\SRC\LCD_Control.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\M25PXX.c</name>
@@ -1009,6 +1027,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\TimeDelay.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\SRC\TW8816_Control.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Platform\SRC\TW8816_OSD.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Platform\SRC\ymodem.c</name>

@@ -33,9 +33,10 @@
 #include "System_Init.h"
 #include "TimeDelay.h"
 #include "FM31X4.h"
-#include "M25PXX.h"
-
-
+#include "TW8816_Control.h"
+#include "TW8816_OSD.h"
+#include "LCD_Control.h"
+#include "GPIO_Control.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/

@@ -9,7 +9,7 @@
   * Project Name       : WL9F Display IAP
   * Project Enviroment : IAREmbedded Workbench for ARM 6.5x 
   *                      STM32F407ZGT6 Firmware Library
-  * Project Workspace  : WL9F_Monitor_IAP
+  * Project Workspace  : WL9F_Display_IAP
   * MCU Type           : STM32F407ZGT6
   *
   * TAEHA MECHATRONICS Co., Ltd (http://www.taeha.co.kr)				
@@ -19,7 +19,9 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "WL9F_Monitor_IAP.h"	
+#include "WL9F_Display_IAP.h"	
+
+#include "WL9F_Monitor_IAP.h"
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -188,15 +190,18 @@ void InitE2PROM(void)
   * @param  None
   * @retval None
   */
+
+RCC_ClocksTypeDef RCC_Clocks;
+
 void RCC_Configuration(void)
 {
-	RCC_ClocksTypeDef RCC_Clocks;
+	
 
   	//	SysTick end of count event each 1ms
   	RCC_GetClocksFreq(&RCC_Clocks);
 
 	//	SysTick Timer을 사용하려면, 아래의 설정을 해야되고, 아래의 설정값은 1msec 설정이다.
-	#if 0		
+	#if 0	
 	//	Setup SysTick Timer for 1 msec interrupts
 	if (SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000))
 	{ 
@@ -238,6 +243,7 @@ void RCC_Configuration(void)
   *          This parameter can be: ENABLE or DISABLE.
   * @retval None
   */
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
@@ -354,7 +360,7 @@ void RCC_Configuration(void)
   */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8  , ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE);
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1  , ENABLE);
@@ -369,7 +375,6 @@ void RCC_Configuration(void)
   */
 void NVIC_Configuration(void)
 {
-
 }
 
 /* Private functions ---------------------------------------------------------*/
@@ -428,7 +433,7 @@ void GPIO_Configuration(void)
 	GPIO_Init(UART2_EXYNOS1_PORT, &GPIO_InitStructure);
 	GPIO_PinAFConfig(UART2_EXYNOS1_PORT, UART2TX_EXYNOS1_PinSource, GPIO_AF_USART2);
 	GPIO_PinAFConfig(UART2_EXYNOS1_PORT, UART2RX_EXYNOS1_PinSource, GPIO_AF_USART2);
-
+#if 0
 //	++, kutelf, 140801
 //	RevD.01.01 
 //	TW8832 -> TW8816 변경 
@@ -453,7 +458,7 @@ void GPIO_Configuration(void)
 //	GPIO_PinAFConfig(TW8832_I2C2_PORT, TW8832_I2C2_SDA_PinSource, GPIO_AF_I2C2);
 #endif
 //	--, kutelf, 140801
-
+#endif
 	//	STM32 UART4 <-> EXYNOS UART3
 	GPIO_InitStructure.GPIO_Pin   = UART4TX_EXYNOS3 | UART4RX_EXYNOS3;
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;   
@@ -557,7 +562,6 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(LCDPWR_PORT, &GPIO_InitStructure);
-
 //	++, kutelf, 140801
 //	RevD.01.01 
 //	FW_UPDATE 삭제 
@@ -572,7 +576,6 @@ void GPIO_Configuration(void)
 	GPIO_Init(FW_UPDATE_PORT, &GPIO_InitStructure);
 #endif
 //	--, kutelf, 140801
-
 	//	LCDBL_PWM -> PWM
 	GPIO_InitStructure.GPIO_Pin   = LCDBL_PWM;
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;   
@@ -765,7 +768,7 @@ void GPIO_Configuration(void)
 //	--, kutelf, 140801
 
     //  사용하지 않는 GPIO Pin은 Output -> Low 상태로 만들어 놓는다.
-    GPIO_Configuration_NotUsed();
+    //GPIO_Configuration_NotUsed();
 }
 
 /**
@@ -978,27 +981,23 @@ void System_Initialize(void)
 	GPIO_ResetBits(LED_PORT, LED_CTRL);			//	LED Enable Off
 	                                //  Set   : LED Enable  -> On
 	                                //  Reset : LED Disable -> Off
-
-	GPIO_ResetBits(EXYNOS_PWR_CTRL_PORT, EXYNOS_PWR_CTRL);	//	Exynos-4412 Power On/Off
-	                                			//  Set   : Exynos-4412 -> Power On
-	                                			//  Reset : Exynos-4412 -> Power Off
-	                                			
+	                             			
 	GPIO_ResetBits(EXYNOS_PMIC_CTRL_PORT, EXYNOS_PMIC_CTRL);	//	Exynos-4412 PMIC On/Off
 	                                				//  PMIC On  : Low -> High
 	                                				//       Off : Low -> High
 	//	++, kutelf, 140801
 	//	RevD.01.01 
 	//	EXYNOS PMIC nRESET => Reset 상태로 초기화 
-	GPIO_ResetBits(EXYNOS_PMIC_nRESET_PORT, EXYNOS_PMIC_nRESET);	//	Exynos-4412 PMIC nRESET
+	GPIO_SetBits(EXYNOS_PMIC_nRESET_PORT, EXYNOS_PMIC_nRESET);	//	Exynos-4412 PMIC nRESET
 	                                				//  PMIC On  : High
 	                                				//       Off : Low
 	//	--, kutelf, 140801
 	
-	GPIO_SetBits(LCD_EXYNOS_PORT, LCD_EXYNOS);	//	Exynos-4412 LCD Display
+	GPIO_ResetBits(LCD_EXYNOS_PORT, LCD_EXYNOS);	//	Exynos-4412 LCD Display
 	                                //  Set   : HI-Z
 	                                //  Reset : Display
 	                                    				
-	GPIO_ResetBits(LCD_STM32_PORT, LCD_STM32);	//	STM32 LCD Display
+	GPIO_SetBits(LCD_STM32_PORT, LCD_STM32);	//	STM32 LCD Display
 	                                //  Set   : HI-Z
 	                                //  Reset : Display
 
@@ -1006,7 +1005,20 @@ void System_Initialize(void)
 	                                        //  Set   : On
 	                                        //  Reset : Off											
 }
-
+// ++, sys3215, 141211
+void Camera_IO_Init(void)
+{
+        
+  	GPIO_InitTypeDef GPIO_InitStructure;
+        
+  	GPIO_InitStructure.GPIO_Pin   = TW8816_I2C2_SCL | TW8816_I2C2_SDA;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(TW8816_I2C2_PORT, &GPIO_InitStructure);
+        GPIO_Configuration_NotUsed();
+}
 /*********(C) COPYRIGHT 2013 TaeHa Mechatronics Co., Ltd. *****END OF FILE****/
 
 

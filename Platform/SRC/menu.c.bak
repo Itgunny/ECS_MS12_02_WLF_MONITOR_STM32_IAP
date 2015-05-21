@@ -35,16 +35,11 @@
 #include "menu.h"
 #include "ymodem.h"
 #include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
-#include "GPIO_Control.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern u32 download_pattern;
-extern u32 FactoryInit_Pattern;
-extern u8 FactoryInitFlag;
-extern u8 UpdateFlag;
-
 pFunction Jump_To_Application;
 uint32_t JumpAddress;
 __IO uint32_t FlashProtection = 0;
@@ -73,19 +68,8 @@ void SerialDownload(void)
   SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
 
   //Size = Ymodem_Receive(&tab_1024[0]);
-  
-  if(FactoryInitFlag == 1)
-  {
-	  Size = Serial_Flash_FactoryInit_Down();
-  }
-  else if(UpdateFlag == 1)
-  {
-      	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_ON);
-        DisplayUpdateOSDInit();
-	Size = Serial_Flash_Down();
-        
-  }
 
+  Size = Serial_Flash_Down();
   
   if (Size > 0)
   {
@@ -200,6 +184,8 @@ void Main_Menu(void)
     SerialPutString("\r\n");
   #endif
   //	--, kutelf, 130222
+  
+  /* Test if any sector of Flash memory where user application will be loaded is write protected */
   if (FLASH_If_GetWriteProtectionStatus() == 0)   
   {
     FlashProtection = 1;
@@ -215,7 +201,7 @@ void Main_Menu(void)
 
 	SerialDownload();
 	
-/*	#if 0
+	#if 0
     SerialPutString("\r\n================== Main Menu ============================\r\n\n");
     SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");
     SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
@@ -236,25 +222,29 @@ void Main_Menu(void)
     SerialPutString("  Upload   Application from   STM32F407 Internal Flash -- 2\r\n\n");
     SerialPutString("  Execute The New Program ------------------------------- 3\r\n\n");
 	SerialPutString("  EEPROM Initialization --------------------------------- 4\r\n\n");
-    SerialPutString("==========================================================\r\n\n");*/
-	//#endif
+    SerialPutString("==========================================================\r\n\n");
+	#endif
 	//	--, kutelf, 130222
-   /* 
+
+    /* Receive key */
     key = GetKey();
 
     if (key == 0x31)
     {
-        SerialDownload();
+      /* Download user application in the Flash */
+      SerialDownload();
     }
     else if (key == 0x32)
     {
-       SerialUpload();
+      /* Upload user application from the Flash */
+      SerialUpload();
     }
-    else if (key == 0x33)
+    else if (key == 0x33) /* execute the new program */
     {
       JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-     
+      /* Jump to user application */
       Jump_To_Application = (pFunction) JumpAddress;
+      /* Initialize user application's Stack Pointer */
       __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
       Jump_To_Application();
     }
@@ -263,7 +253,7 @@ void Main_Menu(void)
 	else if (key == 0x34)
 	{
     	SerialPutString("EEPROM Initialize(Clear) Start...\n\r");
-    	//InitE2PROM();
+    	InitE2PROM();
     	SerialPutString("EEPROM Initialize(Clear) End...\n\r");
 	}
 	//	--, kutelf, 130222
@@ -276,6 +266,7 @@ void Main_Menu(void)
 	#endif
 	//	--, kutelf, 130222
     {
+      /* Disable the write protection */
       switch (FLASH_If_DisableWriteProtection())
       {
         case 1:
@@ -318,7 +309,7 @@ void Main_Menu(void)
 		#endif
 		//	--, kutelf, 130222
       }
-    }*/
+    }
   }
 }
 
