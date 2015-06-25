@@ -82,13 +82,13 @@ void SerialDownload(void)
   {
       	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_ON);
         DisplayUpdateOSDInit();
-	Size = Serial_Flash_Down();
-        
+	Size = Serial_Flash_Down();  
   }
 
   
   if (Size > 0)
   {
+  	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_OFF);
 	//	++, kutelf, 130222
     //  File을 다 받은 후에 자동으로 Running
     #if 0
