@@ -80,15 +80,25 @@ void SerialDownload(void)
   }
   else if(UpdateFlag == 1)
   {
+  	// ++, 150811 sys
+	#if 0
       	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_ON);
-        DisplayUpdateOSDInit();
+	#endif
+	// --, 150811 SYS
+	
+	DisplayUpdateOSDInit();
 	Size = Serial_Flash_Down();  
   }
 
   
   if (Size > 0)
   {
+  	// ++, 150811 sys
+	#if 0
   	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_OFF);
+	#endif
+	// --, 150811 SYS
+	
 	//	++, kutelf, 130222
     //  File을 다 받은 후에 자동으로 Running
     #if 0

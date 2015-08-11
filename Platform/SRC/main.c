@@ -167,14 +167,19 @@ int main(void)
 	/* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
 	if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
 	{
-                TurnOffOSD();                
-                WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_OFF);
-  		/* Jump to user application */
-                JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
-  		Jump_To_Application = (pFunction) JumpAddress;
-  		/* Initialize user application's Stack Pointer */
-  		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-  		Jump_To_Application();
+		TurnOffOSD();         
+		// ++, 150811 sys
+		#if 0
+		WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_OFF);
+		#endif
+		// --, 150811 sys
+		
+		/* Jump to user application */
+		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+		Jump_To_Application = (pFunction) JumpAddress;
+		/* Initialize user application's Stack Pointer */
+		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		Jump_To_Application();
 	}
   	
   	while (1){}

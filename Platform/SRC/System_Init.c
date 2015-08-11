@@ -981,6 +981,10 @@ void System_Initialize(void)
 	GPIO_ResetBits(LED_PORT, LED_CTRL);			//	LED Enable Off
 	                                //  Set   : LED Enable  -> On
 	                                //  Reset : LED Disable -> Off
+
+
+	// ++, 150811 sys 
+	#if 0								
 	                             			
 	GPIO_ResetBits(EXYNOS_PMIC_CTRL_PORT, EXYNOS_PMIC_CTRL);	//	Exynos-4412 PMIC On/Off
 	                                				//  PMIC On  : Low -> High
@@ -992,6 +996,9 @@ void System_Initialize(void)
 	                                				//  PMIC On  : High
 	                                				//       Off : Low
 	//	--, kutelf, 140801
+
+	#endif
+	// --, 150811 sys
 	
 	GPIO_ResetBits(LCD_EXYNOS_PORT, LCD_EXYNOS);	//	Exynos-4412 LCD Display
 	                                //  Set   : HI-Z
