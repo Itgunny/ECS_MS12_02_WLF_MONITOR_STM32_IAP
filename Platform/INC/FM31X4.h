@@ -148,6 +148,16 @@ typedef struct
 #define ADDR_RTC_MINUTE	    	0x03	//	RTC Minute
 #define ADDR_RTC_SECOND	    	0x02	//	RTC Second
 
+// ++, 160512 bwk
+#define ADDRESS_RTC_YEAR        0x09
+#define ADDRESS_RTC_MONTH       0x08
+#define ADDRESS_RTC_DATE        0x06
+#define ADDRESS_RTC_DAY         0x07
+#define ADDRESS_RTC_HOUR        0x05
+#define ADDRESS_RTC_MINUTE      0x04
+#define ADDRESS_RTC_SECOND      0x03
+// --, 160512 bwk
+
 #define ADDR_LCDTYPE			0x10	//	LCD Type Address
 #define ADDR_LCDBL	    		0x11	//	LCD BackLight Address
 
@@ -199,6 +209,20 @@ extern unsigned char READ_RTC_Second(void);
 
 extern void WRITE_RTC(WL9F_DATA_RTC RTC_Data);
 extern void READ_RTC(WL9F_DATA_RTC *RTC_Data);
+
+// ++, 160512 bwk
+void PCA2119_Delay(void);
+void PCA2119_START(void);
+void PCA2119_STOP(void);
+void PCA2119_BIT_WRITE(unsigned char bit);
+unsigned char PCA2119_BIT_READ(void);
+void PCA2119_BYTE_WRITE(unsigned char byte);
+unsigned char PCA2119_BYTE_READ(void);
+void RTC_PortChange(unsigned char dir);
+
+unsigned char read_RTC_Companion(unsigned char address);
+void write_RTC_Companion(unsigned char address, unsigned char data);
+// --, 160512 bwk
 
 extern void InitEEPROM(void);
 

@@ -248,6 +248,15 @@
 #endif
 //	--, kutelf, 140801
 
+// ++, 160512 bwk
+// CPU_DIE
+#define	CPU_DIE			GPIO_Pin_7
+#define	CPU_DIE_PORT	GPIOG
+
+#define	WD_EN			GPIO_Pin_6
+#define	WD_EN_PORT	GPIOG
+// --, 160512 bwk
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

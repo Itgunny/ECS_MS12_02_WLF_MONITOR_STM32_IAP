@@ -35,6 +35,7 @@
 #define MAXSWITCH               6           //  Input Switch 
 #define MAXINPUT               	6           //  Input Switch 
 
+#define EXT_WATCHDOG_ENALBE(x)					GPIO_WriteBit(WD_EN_PORT, WD_EN,x)		// ++, --, 160512 bwk
 
 
 /* Private macro -------------------------------------------------------------*/
@@ -92,6 +93,7 @@ void DisplayUpdateOSDInit(void);
   * @param  None
   * @retval None
   */
+          unsigned char data[7];		// ++, --, 160512 bwk
 int main(void)
 {
   	/* Unlock the Flash Program Erase controller */
@@ -102,7 +104,25 @@ int main(void)
 	//	++, kutelf, 130222
 	System_Configuration();	//	GPIO Setting
 	System_Initialize();	//	System Initialize
+	// ++, 160512 bwk
+#if 0
 	FM3164_Watchdog_Init(0x00);
+#else
+	EXT_WATCHDOG_ENALBE(1);		// ++, --, 160512 bwk
+#endif
+	data[0] = read_RTC_Companion(ADDRESS_RTC_YEAR);
+	data[1] = read_RTC_Companion(ADDRESS_RTC_MONTH);
+	data[2] = read_RTC_Companion(ADDRESS_RTC_DATE);
+	data[3] = read_RTC_Companion(ADDRESS_RTC_DAY);
+	data[4] = read_RTC_Companion(ADDRESS_RTC_HOUR);
+	data[5] = read_RTC_Companion(ADDRESS_RTC_MINUTE);
+	data[6] = read_RTC_Companion(ADDRESS_RTC_SECOND);
+
+	if((data[0]>0x99)||(data[1]>0x12&&data[1]<0x1)||(data[2]>0x31)||(data[3]>0x7&&data[3]<0x1)||(data[4]>0x23)||(data[5]>0x59)||(data[6]>0x59))
+	{
+		Init_RTC();
+	}
+	// --, 160512 bwk	
 		
 	M25P32_Init();	
 	Key_Init();

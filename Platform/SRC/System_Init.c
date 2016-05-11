@@ -767,6 +767,26 @@ void GPIO_Configuration(void)
 #endif
 //	--, kutelf, 140801
 
+	//++, 160512 bwk
+	// RevH.01.01부터 
+	//	Configure CPU_DIE
+	GPIO_InitStructure.GPIO_Pin   = CPU_DIE;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_Init(CPU_DIE_PORT, &GPIO_InitStructure);	 
+
+	// WATCH DOG ENABLE
+	GPIO_InitStructure.GPIO_Pin   = WD_EN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_Init(WD_EN_PORT, &GPIO_InitStructure);	
+	// --, 160512 bwk
+
+
     //  사용하지 않는 GPIO Pin은 Output -> Low 상태로 만들어 놓는다.
     //GPIO_Configuration_NotUsed();
 }
@@ -828,14 +848,21 @@ void GPIO_Configuration_NotUsed(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOF, &GPIO_InitStructure);
 
+	// ++, 160512 bwk
+#if 0
 	//  PG0, PG1, PG2, PG3, PG4, PG5, PG6, PG7, PG8, PG9, PG10, GP12, PG13, PG14
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 |
-    								GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 |
+	GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
+#else
+	//  PG0, PG1, PG2, PG3, PG4, PG5, PG8, PG9, PG10, GP12, PG13, PG14
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | 
+	GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
+#endif
+	// --, 160512 bwk    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;   
   	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOG, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOG, &GPIO_InitStructure);
 	
 
     GPIO_ResetBits(GPIOB, GPIO_Pin_7); 
@@ -894,8 +921,12 @@ void GPIO_Configuration_NotUsed(void)
     GPIO_ResetBits(GPIOG, GPIO_Pin_3); 			
     GPIO_ResetBits(GPIOG, GPIO_Pin_4); 		
     GPIO_ResetBits(GPIOG, GPIO_Pin_5); 			
+    // ++, 160512 bwk
+    #if 0
     GPIO_ResetBits(GPIOG, GPIO_Pin_6); 		
     GPIO_ResetBits(GPIOG, GPIO_Pin_7); 			
+    #endif
+    // --, 160512 bwk
     GPIO_ResetBits(GPIOG, GPIO_Pin_8); 		
     GPIO_ResetBits(GPIOG, GPIO_Pin_9); 			
     GPIO_ResetBits(GPIOG, GPIO_Pin_10); 			
@@ -1010,7 +1041,7 @@ void System_Initialize(void)
 
 	GPIO_ResetBits(CAMERA_nRESET_PORT, CAMERA_nRESET);	//	CAMERA nRESET
 	                                        //  Set   : On
-	                                        //  Reset : Off											
+	                                        //  Reset : Off		
 }
 // ++, sys3215, 141211
 void Camera_IO_Init(void)
