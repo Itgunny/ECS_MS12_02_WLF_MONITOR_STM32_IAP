@@ -93,9 +93,9 @@ void DisplayUpdateOSDInit(void);
   * @param  None
   * @retval None
   */
-          unsigned char data[7];		// ++, --, 160512 bwk
 int main(void)
 {
+  	unsigned char data[7];		// ++, --, 160512 bwk
   	/* Unlock the Flash Program Erase controller */
 	
   	FLASH_If_Init();

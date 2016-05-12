@@ -70,12 +70,17 @@ void RTC_PortChange(unsigned char dir)
 		GPIO_InitStructure.GPIO_Pin = FM31X4_I2C1_SDA;
 		GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+                GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+                GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_Init(FM31X4_I2C1_PORT, &GPIO_InitStructure);	
 	}
 	else		// Input
 	{	
 		GPIO_InitStructure.GPIO_Pin = 	FM31X4_I2C1_SDA ;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+                GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+                GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+                GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_Init(FM31X4_I2C1_PORT, &GPIO_InitStructure);
 	}
 }
