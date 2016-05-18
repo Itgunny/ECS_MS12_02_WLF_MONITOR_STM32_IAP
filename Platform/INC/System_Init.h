@@ -267,6 +267,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void Init_RTC(void);
 extern void RCC_Configuration(void);
 extern void NVIC_Configuration(void);
 extern void GPIO_Configuration(void);

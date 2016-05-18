@@ -88,6 +88,38 @@ static void Key_Init(void);
 static uint32_t KeySwitch_Process(void);
 void DisplayUpdateOSDInit(void);
 /* Private functions ---------------------------------------------------------*/
+unsigned char Confirm_SerialFalsh(void)
+{
+	unsigned char Data1[4]={0,};
+	unsigned char Data2[4]={0,};
+	unsigned char Data3[4]={0,};
+	unsigned char Data4[4]={0,};
+
+	Data2[0] = 0xaa;
+	Data2[1] = 0x44;
+	Data2[2] = 0xc0;
+	Data2[3] = 0x0c;
+
+	Data3[0] = 0xaa;
+	Data3[1] = 0x44;
+	Data3[2] = 0xc0;
+	Data3[3] = 0x0c;
+
+
+	SPI_FLASH_BufferRead(Data1,0x460000,4);		// Sector_70
+
+	if ((memcmp(Data1, Data3, 4)) == 0)
+	{		
+		return 0;
+	}
+	else
+	{
+		SPI_FLASH_SectorErase(0x460000);
+		SPI_FLASH_PageWrite(Data2, 0x460000, 4);
+		SPI_FLASH_BufferRead(Data4, 0x460000, 4);
+		return 1;
+	}   
+}
 /**
   * @brief  Main program.
   * @param  None
@@ -99,7 +131,17 @@ int main(void)
   	/* Unlock the Flash Program Erase controller */
 	
   	FLASH_If_Init();
-	
+
+	// Serial Flash Address
+	/* 
+	#define Sector_1 		0x10000		// STM32_UPDATE(MASS UPDATE)		
+	#define Sector_10 	0xA0000		// STM32_UPDATE(factory init))
+	#define Sector_60 	0x3c0000		// Serial Flash Test
+	#define Sector_61 	0x3d0000		// fatoryinit_enable_code
+	#define Sector_62 	0x3e0000		// fatoryinit_enable_code
+	#define Sector_63 	0x3f0000		// download enable code
+	#define Sector_70		0x460000		// RTC Init
+	*/
 
 	//	++, kutelf, 130222
 	System_Configuration();	//	GPIO Setting
@@ -108,20 +150,8 @@ int main(void)
 #if 0
 	FM3164_Watchdog_Init(0x00);
 #else
-	EXT_WATCHDOG_ENALBE(1);		// ++, --, 160512 bwk
+	EXT_WATCHDOG_ENALBE(1);
 #endif
-	data[0] = read_RTC_Companion(ADDRESS_RTC_YEAR);
-	data[1] = read_RTC_Companion(ADDRESS_RTC_MONTH);
-	data[2] = read_RTC_Companion(ADDRESS_RTC_DATE);
-	data[3] = read_RTC_Companion(ADDRESS_RTC_DAY);
-	data[4] = read_RTC_Companion(ADDRESS_RTC_HOUR);
-	data[5] = read_RTC_Companion(ADDRESS_RTC_MINUTE);
-	data[6] = read_RTC_Companion(ADDRESS_RTC_SECOND);
-
-	if((data[0]>0x99)||(data[1]>0x12&&data[1]<0x1)||(data[2]>0x31)||(data[3]>0x7&&data[3]<0x1)||(data[4]>0x23)||(data[5]>0x59)||(data[6]>0x59))
-	{
-		Init_RTC();
-	}
 	// --, 160512 bwk	
 		
 	M25P32_Init();	
@@ -130,12 +160,29 @@ int main(void)
 	//SPI_FLASH_SectorErase(0x3f0000);
 	
 	//SPI_FLASH_PageWrite(tmp,0x3f0000,4);
+	// ++, 160518 bwk
+	if(Confirm_SerialFalsh()==1)
+	{
+		data[0] = read_RTC_Companion(ADDRESS_RTC_YEAR);
+		data[1] = read_RTC_Companion(ADDRESS_RTC_MONTH);
+		data[2] = read_RTC_Companion(ADDRESS_RTC_DATE);
+		data[3] = read_RTC_Companion(ADDRESS_RTC_DAY);
+		data[4] = read_RTC_Companion(ADDRESS_RTC_HOUR);
+		data[5] = read_RTC_Companion(ADDRESS_RTC_MINUTE);
+		data[6] = read_RTC_Companion(ADDRESS_RTC_SECOND);
+
+		if((data[0]>0x99)||(data[1]>0x12&&data[1]<0x1)||(data[2]>0x31)||(data[3]>0x7&&data[3]<0x1)||(data[4]>0x23)||(data[5]>0x59)||(data[6]>0x59))
+		{
+			Init_RTC();
+		}
+	}
+      // --, 160518 bwk
 
         
 	FactoryInitFlag = 0;
 	UpdateFlag = 0;        
         
-	SPI_FLASH_BufferRead(tmp1,0x3e0000,6);
+	SPI_FLASH_BufferRead(tmp1,0x3e0000,6);			// Sector_62
 
 	FactoryInit_Pattern = (tmp1[3] << 24) | (tmp1[2] << 16) | (tmp1[1] << 8) | tmp1[0]; 
 
