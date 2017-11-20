@@ -1,0 +1,458 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.1.4415/W32 for ARM      23/Jan/2017  15:40:56 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\menu.c                                         #
+#    Command line =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\menu.c -D USE_STDPERIPH_DRIVER -D STM32F4XX    #
+#                    -D USE_STM324xG_EVAL -D USE_FULL_ASSERT -lcN             #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\ -o D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_M #
+#                    ONITOR_STM32_IAP\Project\Debug\Obj\ --debug              #
+#                    --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp        #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Ful #
+#                    l.h" -I D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32 #
+#                    _IAP\Project\..\Platform\INC\ -I                         #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\ -I  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\ -I     #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\Common\ -I                  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\STM3240_41_G_EVAL\ -Oh      #
+#                    --use_c++_inline -I "C:\Program Files (x86)\IAR          #
+#                    Systems\Embedded Workbench 6.5\arm\CMSIS\Include\"       #
+#    List file    =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\menu.lst                                 #
+#    Object file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\Obj\menu.o                                    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Platform\SRC\menu.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    STM32F4xx_IAP/src/menu.c 
+      4            * @author  MCD Application Team
+      5            * @version V1.0.0
+      6            * @date    10-October-2011
+      7            * @brief   This file provides the software which contains the main menu routine.
+      8            *          The main menu gives the options of:
+      9            *             - downloading a new binary file, 
+     10            *             - uploading internal flash memory,
+     11            *             - executing the binary file already loaded 
+     12            *             - disabling the write protection of the Flash sectors where the 
+     13            *               user loads his binary file.
+     14            ******************************************************************************
+     15            * @attention
+     16            *
+     17            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     18            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     19            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     20            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     21            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     22            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     23            *
+     24            * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+     25            ******************************************************************************
+     26            */ 
+     27          
+     28          /** @addtogroup STM32F4xx_IAP
+     29            * @{
+     30            */
+     31          
+     32          /* Includes ------------------------------------------------------------------*/
+     33          #include "common.h"
+     34          #include "flash_if.h"
+     35          #include "menu.h"
+     36          #include "ymodem.h"
+     37          #include "WL9F_Display_IAP.h"	//	++, --, kutelf, 130222
+     38          #include "GPIO_Control.h"
+     39          /* Private typedef -----------------------------------------------------------*/
+     40          /* Private define ------------------------------------------------------------*/
+     41          /* Private macro -------------------------------------------------------------*/
+     42          /* Private variables ---------------------------------------------------------*/
+     43          extern u32 download_pattern;
+     44          extern u32 FactoryInit_Pattern;
+     45          extern u8 FactoryInitFlag;
+     46          extern u8 UpdateFlag;
+     47          
+     48          pFunction Jump_To_Application;
+     49          uint32_t JumpAddress;
+     50          __IO uint32_t FlashProtection = 0;
+     51          uint8_t tab_1024[1024] =
+     52            {
+     53              0
+     54            };
+     55          uint8_t FileName[FILE_NAME_LENGTH];
+     56          
+     57          /* Private function prototypes -----------------------------------------------*/
+     58          void SerialDownload(void);
+     59          void SerialUpload(void);
+     60          
+     61          /* Private functions ---------------------------------------------------------*/
+     62          
+     63          /**
+     64            * @brief  Download a file via serial port
+     65            * @param  None
+     66            * @retval None
+     67            */
+     68          void SerialDownload(void)
+     69          {
+     70            uint8_t Number[10] = "          ";
+     71            int32_t Size = 0;
+     72          
+     73            SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
+     74          
+     75            //Size = Ymodem_Receive(&tab_1024[0]);
+     76            
+     77            if(FactoryInitFlag == 1)
+     78            {
+     79          	  Size = Serial_Flash_FactoryInit_Down();
+     80            }
+     81            else if(UpdateFlag == 1)
+     82            {
+     83            	// ++, 150811 sys
+     84          	#if 0
+     85                	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_ON);
+     86          	#endif
+     87          	// --, 150811 SYS
+     88          	
+     89          	DisplayUpdateOSDInit();
+     90          	Size = Serial_Flash_Down();  
+     91            }
+     92          
+     93            
+     94            if (Size > 0)
+     95            {
+     96            	// ++, 150811 sys
+     97          	#if 0
+     98            	WL9FM_EXYNOS_POWER_ONOFF(EXYNOS_POWER_OFF);
+     99          	#endif
+    100          	// --, 150811 SYS
+    101          	
+    102          	//	++, kutelf, 130222
+    103              //  File을 다 받은 후에 자동으로 Running
+    104              #if 0
+    105              SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+    106              SerialPutString(FileName);
+    107              Int2Str(Number, Size);
+    108              SerialPutString("\n\r Size: ");
+    109              SerialPutString(Number);
+    110              SerialPutString(" Bytes\r\n");
+    111              SerialPutString("-------------------\n");
+    112          	#else
+    113              SerialPutString("\n\n\r Programming Completed Successfully!");
+    114              SerialPutString("\n\r--------------------------------\r\n Send File Name: ");
+    115              SerialPutString(FileName);
+    116              Int2Str(Number, Size);
+    117              SerialPutString("\n\r Send File Size: ");
+    118              SerialPutString(Number);
+    119              SerialPutString(" Bytes\r\n");
+    120              SerialPutString("--------------------------------\n");
+    121              SerialPutString("\r\n\r\n");
+    122              SerialPutString("Application Program Running.....\r\n");
+    123              
+    124          	/* Jump to user application */
+    125          	JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+    126          	Jump_To_Application = (pFunction) JumpAddress;
+    127          	/* Initialize user application's Stack Pointer */
+    128          	__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+    129          	Jump_To_Application();
+    130          	#endif
+    131          	//	--, kutelf, 130222
+    132            }
+    133            else if (Size == -1)
+    134            {
+    135              SerialPutString("\n\n\rThe image size is higher than the allowed space memory!\n\r");
+    136            }
+    137            else if (Size == -2)
+    138            {
+    139              SerialPutString("\n\n\rVerification failed!\n\r");
+    140            }
+    141            else if (Size == -3)
+    142            {
+    143              SerialPutString("\r\n\nAborted by user.\n\r");
+    144            }
+    145            else
+    146            {
+    147              SerialPutString("\n\rFailed to receive the file!\n\r");
+    148            }
+    149          }
+    150          
+    151          /**
+    152            * @brief  Upload a file via serial port.
+    153            * @param  None
+    154            * @retval None
+    155            */
+    156          void SerialUpload(void)
+    157          {
+    158            uint8_t status = 0 ; 
+    159          
+    160            SerialPutString("\n\n\rSelect Receive File\n\r");
+    161          
+    162            if (GetKey() == CRC16)
+    163            {
+    164              /* Transmit the flash image through ymodem protocol */
+    165              status = Ymodem_Transmit((uint8_t*)APPLICATION_ADDRESS, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
+    166          
+    167              if (status != 0) 
+    168              {
+    169                SerialPutString("\n\rError Occurred while Transmitting File\n\r");
+    170              }
+    171              else
+    172              {
+    173                SerialPutString("\n\rFile uploaded successfully \n\r");
+    174              }
+    175            }
+    176          }
+    177          
+    178          /**
+    179            * @brief  Display the Main Menu on HyperTerminal
+    180            * @param  None
+    181            * @retval None
+    182            */
+    183          void Main_Menu(void)
+    184          {
+    185            uint8_t key = 0;
+    186          
+    187            //	++, kutelf, 130222	
+    188            #if 0	
+    189            SerialPutString("\r\n======================================================================");
+    190            SerialPutString("\r\n=              (C) COPYRIGHT 2011 STMicroelectronics                 =");
+    191            SerialPutString("\r\n=                                                                    =");
+    192            SerialPutString("\r\n=  STM32F4xx In-Application Programming Application  (Version 1.0.0) =");
+    193            SerialPutString("\r\n=                                                                    =");
+    194            SerialPutString("\r\n=                                   By MCD Application Team          =");
+    195            SerialPutString("\r\n======================================================================");
+    196            SerialPutString("\r\n\r\n");
+    197            #else
+    198              SerialPutString("\r\n==========================================================");
+    199              SerialPutString("\r\n=                                                        =");
+    200              SerialPutString("\r\n=             TaeHa Mechatronics Co., Ltd.               =");
+    201              SerialPutString("\r\n=                                                        =");
+    202              SerialPutString("\r\n= In-Application Programming Application                 =");
+    203              SerialPutString("\r\n=                                                        =");
+    204              SerialPutString("\r\n= Project      : WL9F Display (Monitor & Cluster)        =");
+    205              SerialPutString("\r\n= Environment  : EWARM v6.5, Library v1.0.0              ="); 
+    206              SerialPutString("\r\n=                STM32F4xx Standard Peripherals Library  =");	
+    207              SerialPutString("\r\n=                                                        =");
+    208              SerialPutString("\r\n= By ECS Div. kutelf                                     =");
+    209              SerialPutString("\r\n==========================================================");
+    210              SerialPutString("\r\n");
+    211            #endif
+    212            //	--, kutelf, 130222
+    213            if (FLASH_If_GetWriteProtectionStatus() == 0)   
+    214            {
+    215              FlashProtection = 1;
+    216            }
+    217            else
+    218            {
+    219              FlashProtection = 0;
+    220            }
+    221          
+    222            while (1)
+    223            {
+    224          	//	++, kutelf, 130222
+    225          
+    226          	SerialDownload();
+    227          	
+    228          /*	#if 0
+    229              SerialPutString("\r\n================== Main Menu ============================\r\n\n");
+    230              SerialPutString("  Download Image To the STM32F4xx Internal Flash ------- 1\r\n\n");
+    231              SerialPutString("  Upload Image From the STM32F4xx Internal Flash ------- 2\r\n\n");
+    232              SerialPutString("  Execute The New Program ------------------------------ 3\r\n\n");
+    233          
+    234              if(FlashProtection != 0)
+    235              {
+    236                SerialPutString("  Disable the write protection ------------------------- 4\r\n\n");
+    237              }
+    238              SerialPutString("==========================================================\r\n\n");
+    239          	#else
+    240              SerialPutString("\r\n==================== Main Menu ===========================\r\n\n");
+    241              if(FlashProtection != 0)
+    242              {
+    243              SerialPutString("  Disable the write protection (STM32F407 Internal Flash) 0\r\n\n");
+    244              }
+    245              SerialPutString("  Download Application to the STM32F407 Internal Flash -- 1\r\n\n");
+    246              SerialPutString("  Upload   Application from   STM32F407 Internal Flash -- 2\r\n\n");
+    247              SerialPutString("  Execute The New Program ------------------------------- 3\r\n\n");
+    248          	SerialPutString("  EEPROM Initialization --------------------------------- 4\r\n\n");
+    249              SerialPutString("==========================================================\r\n\n");*/
+    250          	//#endif
+    251          	//	--, kutelf, 130222
+    252             /* 
+    253              key = GetKey();
+    254          
+    255              if (key == 0x31)
+    256              {
+    257                  SerialDownload();
+    258              }
+    259              else if (key == 0x32)
+    260              {
+    261                 SerialUpload();
+    262              }
+    263              else if (key == 0x33)
+    264              {
+    265                JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+    266               
+    267                Jump_To_Application = (pFunction) JumpAddress;
+    268                __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+    269                Jump_To_Application();
+    270              }
+    271          	//	++, kutelf, 130222
+    272          	//	EEPROM Clear Menu 추가.
+    273          	else if (key == 0x34)
+    274          	{
+    275              	SerialPutString("EEPROM Initialize(Clear) Start...\n\r");
+    276              	//InitE2PROM();
+    277              	SerialPutString("EEPROM Initialize(Clear) End...\n\r");
+    278          	}
+    279          	//	--, kutelf, 130222
+    280          	//	++, kutelf, 130222
+    281          	//	Write Pritection Menu Number 변경 
+    282          	#if 0
+    283          	else if ((key == 0x34) && (FlashProtection == 1))
+    284          	#else
+    285          	else if ((key == 0x30) && (FlashProtection == 1))
+    286          	#endif
+    287          	//	--, kutelf, 130222
+    288              {
+    289                switch (FLASH_If_DisableWriteProtection())
+    290                {
+    291                  case 1:
+    292                  {
+    293                    SerialPutString("Write Protection disabled...\r\n");
+    294                    FlashProtection = 0;
+    295                    break;
+    296                  }
+    297                  case 2:
+    298                  {
+    299                    SerialPutString("Error: Flash write unprotection failed...\r\n");
+    300                    break;
+    301                  }
+    302                  default:
+    303                  {
+    304                  }
+    305                }
+    306              }
+    307              else
+    308              {
+    309                if (FlashProtection == 0)
+    310                {
+    311          		//	++, kutelf, 130222
+    312          		//	Write Pritection Menu Number 변경 
+    313          		#if 0
+    314                  SerialPutString("Invalid Number ! ==> The number should be either 1, 2 or 3\r");
+    315          		#else
+    316                  SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
+    317          		#endif
+    318          		//	--, kutelf, 130222
+    319                }
+    320                else
+    321                {
+    322          		//	++, kutelf, 130222
+    323          		//	Write Pritection Menu Number 변경 
+    324          		#if 0
+    325                  SerialPutString("Invalid Number ! ==> The number should be either 1, 2, 3 or 4\r");
+    326          		#else
+    327                  SerialPutString("Invalid Number ! ==> The number should be either 0, 1, 2, 3 or 4\r");
+    328          		#endif
+    329          		//	--, kutelf, 130222
+    330                }
+    331              }*/
+    332            }
+    333          }
+    334          
+    335          /**
+    336            * @}
+    337            */
+    338          
+    339          /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE******/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   Main_Menu
+        16   -> FLASH_If_GetWriteProtectionStatus
+        16   -> SerialDownload
+        16   -> Serial_PutString
+      24   SerialDownload
+        24   -- Indirect call
+        24   -> DisplayUpdateOSDInit
+        24   -> Int2Str
+        24   -> Serial_Flash_Down
+        24   -> Serial_Flash_FactoryInit_Down
+        24   -> Serial_PutString
+        24   -> __aeabi_memcpy4
+       8   SerialUpload
+         8   -> GetKey
+         0   -> Serial_PutString
+         8   -> Serial_PutString
+         8   -> Ymodem_Transmit
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      12  ?<Constant "          ">
+      12  ?<Constant " Bytes\r\n">
+      36  ?<Constant "---------------------...">
+      36  ?<Constant "Application Program R...">
+      24  ?<Constant "UploadedFlashImage.bin">
+      60  ?<Constant "Waiting for the file ...">
+      40  ?<Constant "\n\n\r Programming Compl...">
+      28  ?<Constant "\n\n\rSelect Receive File\n\r">
+      64  ?<Constant "\n\n\rThe image size is ...">
+      28  ?<Constant "\n\n\rVerification faile...">
+      20  ?<Constant "\n\r Send File Size: ">
+      56  ?<Constant "\n\r-------------------...">
+      44  ?<Constant "\n\rError Occurred whil...">
+      32  ?<Constant "\n\rFailed to receive t...">
+      32  ?<Constant "\n\rFile uploaded succe...">
+       4  ?<Constant "\r\n">
+      64  ?<Constant "\r\n=                  ...">
+      64  ?<Constant "\r\n=                ST...">
+      64  ?<Constant "\r\n=             TaeHa...">
+      64  ?<Constant "\r\n= By ECS Div. kutel...">
+      64  ?<Constant "\r\n= Environment  : EW...">
+      64  ?<Constant "\r\n= In-Application Pr...">
+      64  ?<Constant "\r\n= Project      : WL...">
+      64  ?<Constant "\r\n===================...">
+      24  ?<Constant "\r\n\nAborted by user.\n\r">
+       8  ?<Constant "\r\n\r\n">
+       4  ??DataTable28
+       4  ??DataTable28_1
+       4  ??DataTable28_2
+       4  ??DataTable28_3
+       4  ??DataTable28_4
+       4  ??DataTable28_5
+       4  FlashProtection
+     264  Jump_To_Application
+          JumpAddress
+          FileName
+     120  Main_Menu
+     210  SerialDownload
+      54  SerialUpload
+    1024  tab_1024
+
+ 
+ 1 292 bytes in section .bss
+     4 bytes in section .rodata
+ 1 476 bytes in section .text
+ 
+ 1 476 bytes of CODE  memory
+     4 bytes of CONST memory
+ 1 292 bytes of DATA  memory
+
+Errors: none
+Warnings: 2

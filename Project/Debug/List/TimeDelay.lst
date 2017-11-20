@@ -1,0 +1,157 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.1.4415/W32 for ARM      23/Jan/2017  15:40:55 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\TimeDelay.c                                    #
+#    Command line =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\TimeDelay.c -D USE_STDPERIPH_DRIVER -D         #
+#                    STM32F4XX -D USE_STM324xG_EVAL -D USE_FULL_ASSERT -lcN   #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\ -o D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_M #
+#                    ONITOR_STM32_IAP\Project\Debug\Obj\ --debug              #
+#                    --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp        #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Ful #
+#                    l.h" -I D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32 #
+#                    _IAP\Project\..\Platform\INC\ -I                         #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\ -I  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\ -I     #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\Common\ -I                  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\STM3240_41_G_EVAL\ -Oh      #
+#                    --use_c++_inline -I "C:\Program Files (x86)\IAR          #
+#                    Systems\Embedded Workbench 6.5\arm\CMSIS\Include\"       #
+#    List file    =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\TimeDelay.lst                            #
+#    Object file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\Obj\TimeDelay.o                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Platform\SRC\TimeDelay.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    TimeDelay.c 
+      4            * @author  kutelf (kutelf@taeha.co.kr)
+      5            * @version V1.0.0
+      6            * @date    02/22/2013
+      7            * @brief   TimeDelay.c module
+      8            *
+      9            * Project Name       : WL9F Display IAP
+     10            * Project Enviroment : IAREmbedded Workbench for ARM 6.5x 
+     11            *                      STM32F407ZGT6 Firmware Library
+     12            * Project Workspace  : WL9F_Display_IAP
+     13            * MCU Type           : STM32F407ZGT6
+     14            *
+     15            * TAEHA MECHATRONICS Co., Ltd (http://www.taeha.co.kr)				
+     16            * ECS Division R&D Center. / Author by Young-Min Han (kutelf@taeha.co.kr)
+     17            * 
+     18            ******************************************************************************
+     19            */ 
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "WL9F_Display_IAP.h"	
+     23          
+     24          /* Private typedef -----------------------------------------------------------*/
+     25          /* Private define ------------------------------------------------------------*/
+     26          /* Private macro -------------------------------------------------------------*/
+     27          /* Private variables ---------------------------------------------------------*/
+     28          static __IO uint32_t TimingDelay;
+     29          
+     30          /* Private function prototypes -----------------------------------------------*/
+     31          /* Private functions ---------------------------------------------------------*/
+     32          /**
+     33            * @brief  Decrements the TimingDelay variable.
+     34            * @param  None
+     35            * @retval None
+     36            */
+     37          void TimeDelay_Decrement(void)
+     38          {
+     39              if (TimingDelay != 0x00)
+     40              { 
+     41                  TimingDelay--;
+     42              }
+     43          }
+     44          
+     45          /**
+     46            * @brief  Inserts a delay time.
+     47            * @param  nTime: specifies the delay time length, in milliseconds.
+     48            * @retval None
+     49            */
+     50          void TimeDelay(__IO uint32_t nTime)
+     51          { 
+     52              TimingDelay = nTime;
+     53          
+     54              while (TimingDelay != 0);
+     55          }
+     56          
+     57          /**
+     58            * @brief  Inserts a usec delay time.
+     59            * @param  nCount: specifies the delay time length, in milliseconds.
+     60            * @retval None
+     61            */
+     62          void TimeDelay_usec(uint32_t nCount)
+     63          {
+     64              vu32 i, j;
+     65          
+     66              for (i = 0; i < nCount; i++)
+     67                  for (j = 0; j < 5; j++);
+     68          }
+     69          
+     70          /**
+     71            * @brief  Inserts a msec delay time.
+     72            * @param  nCount: specifies the delay time length, in milliseconds.
+     73            * @retval None
+     74            */
+     75          void TimeDelay_msec(uint32_t nCount)
+     76          {
+     77              vu32 i, j;
+     78          
+     79          #if 0
+     80              for (i = 0; i < nCount; i++)
+     81                  for (j = 0; j < 5000; j++);
+     82          #else
+     83          	for (i = 0; i < nCount; i++)
+     84                  for (j = 0; j < 17000; j++);
+     85          #endif
+     86          }
+     87          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       4   TimeDelay
+       0   TimeDelay_Decrement
+       8   TimeDelay_msec
+       8   TimeDelay_usec
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+      18  TimeDelay
+      14  TimeDelay_Decrement
+      44  TimeDelay_msec
+      38  TimeDelay_usec
+       4  TimingDelay
+
+ 
+   4 bytes in section .bss
+ 118 bytes in section .text
+ 
+ 118 bytes of CODE memory
+   4 bytes of DATA memory
+
+Errors: none
+Warnings: none

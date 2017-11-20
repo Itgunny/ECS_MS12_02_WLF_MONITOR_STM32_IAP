@@ -1,0 +1,878 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.1.4415/W32 for ARM      23/Jan/2017  15:41:07 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\ymodem.c                                       #
+#    Command line =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\ymodem.c -D USE_STDPERIPH_DRIVER -D STM32F4XX  #
+#                    -D USE_STM324xG_EVAL -D USE_FULL_ASSERT -lcN             #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\ -o D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_M #
+#                    ONITOR_STM32_IAP\Project\Debug\Obj\ --debug              #
+#                    --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp        #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Ful #
+#                    l.h" -I D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32 #
+#                    _IAP\Project\..\Platform\INC\ -I                         #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\ -I  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\ -I     #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\Common\ -I                  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\STM3240_41_G_EVAL\ -Oh      #
+#                    --use_c++_inline -I "C:\Program Files (x86)\IAR          #
+#                    Systems\Embedded Workbench 6.5\arm\CMSIS\Include\"       #
+#    List file    =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\ymodem.lst                               #
+#    Object file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\Obj\ymodem.o                                  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Platform\SRC\ymodem.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    STM32F4xx_IAP/src/ymodem.c 
+      4            * @author  MCD Application Team
+      5            * @version V1.0.0
+      6            * @date    10-October-2011
+      7            * @brief   This file provides all the software functions related to the ymodem 
+      8            *          protocol.
+      9            ******************************************************************************
+     10            * @attention
+     11            *
+     12            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     13            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     14            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     15            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     16            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     17            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     18            *
+     19            * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+     20            ******************************************************************************
+     21            */
+     22          
+     23          /** @addtogroup STM32F4xx_IAP
+     24            * @{
+     25            */ 
+     26            
+     27          /* Includes ------------------------------------------------------------------*/
+     28          #include "flash_if.h"
+     29          #include "common.h"
+     30          #include "ymodem.h"
+     31          #include "string.h"
+     32          #include "M25PXX.h"
+     33          
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          extern uint8_t FileName[];
+     39          
+     40          
+     41          u32 FlashDestination = APPLICATION_ADDRESS; /* Flash user program offset */
+     42          u16 PageSize = 0x400;
+     43          u32 EraseCounter = 0x0;
+     44          u32 NbrOfPage = 0;
+     45          FLASH_Status FLASHStatus = FLASH_COMPLETE;
+     46          u32 RamSource;
+     47          extern u8 tab_1024[1024];
+     48          extern u16 Index_Down;
+     49          extern u8 fatoryinit_start_code[4];
+     50          extern u8 fatoryinit_end_code[4];
+     51          /* Private function prototypes -----------------------------------------------*/
+     52          /* Private functions ---------------------------------------------------------*/
+     53          
+     54          /**
+     55            * @brief  Receive byte from sender
+     56            * @param  c: Character
+     57            * @param  timeout: Timeout
+     58            * @retval 0: Byte received
+     59            *        -1: Timeout
+     60            */
+     61          static  int32_t Receive_Byte (uint8_t *c, uint32_t timeout)
+     62          {
+     63            while (timeout-- > 0)
+     64            {
+     65              if (SerialKeyPressed(c) == 1)
+     66              {
+     67                return 0;
+     68              }
+     69            }
+     70            return -1;
+     71          }
+     72          
+     73          /**
+     74            * @brief  Send a byte
+     75            * @param  c: Character
+     76            * @retval 0: Byte sent
+     77            */
+     78          static uint32_t Send_Byte (uint8_t c)
+     79          {
+     80            SerialPutChar(c);
+     81            return 0;
+     82          }
+     83          
+     84          /**
+     85            * @brief  Receive a packet from sender
+     86            * @param  data
+     87            * @param  length
+     88            * @param  timeout
+     89            *     0: end of transmission
+     90            *    -1: abort by sender
+     91            *    >0: packet length
+     92            * @retval 0: normally return
+     93            *        -1: timeout or packet error
+     94            *         1: abort by user
+     95            */
+     96          static int32_t Receive_Packet (uint8_t *data, int32_t *length, uint32_t timeout)
+     97          {
+     98            uint16_t i, packet_size;
+     99            uint8_t c;
+    100            *length = 0;
+    101            if (Receive_Byte(&c, timeout) != 0)
+    102            {
+    103              return -1;
+    104            }
+    105            switch (c)
+    106            {
+    107              case SOH:
+    108                packet_size = PACKET_SIZE;
+    109                break;
+    110              case STX:
+    111                packet_size = PACKET_1K_SIZE;
+    112                break;
+    113              case EOT:
+    114                return 0;
+    115              case CA:
+    116                if ((Receive_Byte(&c, timeout) == 0) && (c == CA))
+    117                {
+    118                  *length = -1;
+    119                  return 0;
+    120                }
+    121                else
+    122                {
+    123                  return -1;
+    124                }
+    125              case ABORT1:
+    126              case ABORT2:
+    127                return 1;
+    128              default:
+    129                return -1;
+    130            }
+    131            *data = c;
+    132            for (i = 1; i < (packet_size + PACKET_OVERHEAD); i ++)
+    133            {
+    134              if (Receive_Byte(data + i, timeout) != 0)
+    135              {
+    136                return -1;
+    137              }
+    138            }
+    139            if (data[PACKET_SEQNO_INDEX] != ((data[PACKET_SEQNO_COMP_INDEX] ^ 0xff) & 0xff))
+    140            {
+    141              return -1;
+    142            }
+    143            *length = packet_size;
+    144            return 0;
+    145          }
+    146          
+    147          /**
+    148            * @brief  Receive a file using the ymodem protocol.
+    149            * @param  buf: Address of the first byte.
+    150            * @retval The size of the file.
+    151            */
+    152          int32_t Ymodem_Receive (uint8_t *buf)
+    153          {
+    154            uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], file_size[FILE_SIZE_LENGTH], *file_ptr, *buf_ptr;
+    155            int32_t i, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
+    156            uint32_t flashdestination, ramsource;
+    157          
+    158            /* Initialize flashdestination variable */
+    159            flashdestination = APPLICATION_ADDRESS;
+    160          
+    161            for (session_done = 0, errors = 0, session_begin = 0; ;)
+    162            {
+    163              for (packets_received = 0, file_done = 0, buf_ptr = buf; ;)
+    164              {
+    165                switch (Receive_Packet(packet_data, &packet_length, NAK_TIMEOUT))
+    166                {
+    167                  case 0:
+    168                    errors = 0;
+    169                    switch (packet_length)
+    170                    {
+    171                      /* Abort by sender */
+    172                      case - 1:
+    173                        Send_Byte(ACK);
+    174                        return 0;
+    175                      /* End of transmission */
+    176                      case 0:
+    177                        Send_Byte(ACK);
+    178                        file_done = 1;
+    179                        break;
+    180                      /* Normal packet */
+    181                      default:
+    182                        if ((packet_data[PACKET_SEQNO_INDEX] & 0xff) != (packets_received & 0xff))
+    183                        {
+    184                          Send_Byte(NAK);
+    185                        }
+    186                        else
+    187                        {
+    188                          if (packets_received == 0)
+    189                          {
+    190                            /* Filename packet */
+    191                            if (packet_data[PACKET_HEADER] != 0)
+    192                            {
+    193                              /* Filename packet has valid data */
+    194                              for (i = 0, file_ptr = packet_data + PACKET_HEADER; (*file_ptr != 0) && (i < FILE_NAME_LENGTH);)
+    195                              {
+    196                                FileName[i++] = *file_ptr++;
+    197                              }
+    198                              FileName[i++] = '\0';
+    199                              for (i = 0, file_ptr ++; (*file_ptr != ' ') && (i < FILE_SIZE_LENGTH);)
+    200                              {
+    201                                file_size[i++] = *file_ptr++;
+    202                              }
+    203                              file_size[i++] = '\0';
+    204                              Str2Int(file_size, &size);
+    205          
+    206                              /* Test the size of the image to be sent */
+    207                              /* Image size is greater than Flash size */
+    208                              if (size > (USER_FLASH_SIZE + 1))
+    209                              {
+    210                                /* End session */
+    211                                Send_Byte(CA);
+    212                                Send_Byte(CA);
+    213                                return -1;
+    214                              }
+    215                              /* erase user application area */
+    216                              FLASH_If_Erase(APPLICATION_ADDRESS);
+    217                              Send_Byte(ACK);
+    218                              Send_Byte(CRC16);
+    219                            }
+    220                            /* Filename packet is empty, end session */
+    221                            else
+    222                            {
+    223                              Send_Byte(ACK);
+    224                              file_done = 1;
+    225                              session_done = 1;
+    226                              break;
+    227                            }
+    228                          }
+    229                          /* Data packet */
+    230                          else
+    231                          {
+    232                            memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
+    233                            ramsource = (uint32_t)buf;
+    234          
+    235                            /* Write received data in Flash */
+    236                            if (FLASH_If_Write(&flashdestination, (uint32_t*) ramsource, (uint16_t) packet_length/4)  == 0)
+    237                            {
+    238                              Send_Byte(ACK);
+    239                            }
+    240                            else /* An error occurred while writing to Flash memory */
+    241                            {
+    242                              /* End session */
+    243                              Send_Byte(CA);
+    244                              Send_Byte(CA);
+    245                              return -2;
+    246                            }
+    247                          }
+    248                          packets_received ++;
+    249                          session_begin = 1;
+    250                        }
+    251                    }
+    252                    break;
+    253                  case 1:
+    254                    Send_Byte(CA);
+    255                    Send_Byte(CA);
+    256                    return -3;
+    257                  default:
+    258                    if (session_begin > 0)
+    259                    {
+    260                      errors ++;
+    261                    }
+    262                    if (errors > MAX_ERRORS)
+    263                    {
+    264                      Send_Byte(CA);
+    265                      Send_Byte(CA);
+    266                      return 0;
+    267                    }
+    268                    Send_Byte(CRC16);
+    269                    break;
+    270                }
+    271                if (file_done != 0)
+    272                {
+    273                  break;
+    274                }
+    275              }
+    276              if (session_done != 0)
+    277              {
+    278                break;
+    279              }
+    280            }
+    281            return (int32_t)size;
+    282          }
+    283          
+    284          /**
+    285            * @brief  check response using the ymodem protocol
+    286            * @param  buf: Address of the first byte
+    287            * @retval The size of the file
+    288            */
+    289          int32_t Ymodem_CheckResponse(uint8_t c)
+    290          {
+    291            return 0;
+    292          }
+    293          
+    294          /**
+    295            * @brief  Prepare the first block
+    296            * @param  timeout
+    297            *     0: end of transmission
+    298            * @retval None
+    299            */
+    300          void Ymodem_PrepareIntialPacket(uint8_t *data, const uint8_t* fileName, uint32_t *length)
+    301          {
+    302            uint16_t i, j;
+    303            uint8_t file_ptr[10];
+    304            
+    305            /* Make first three packet */
+    306            data[0] = SOH;
+    307            data[1] = 0x00;
+    308            data[2] = 0xff;
+    309            
+    310            /* Filename packet has valid data */
+    311            for (i = 0; (fileName[i] != '\0') && (i < FILE_NAME_LENGTH);i++)
+    312            {
+    313               data[i + PACKET_HEADER] = fileName[i];
+    314            }
+    315          
+    316            data[i + PACKET_HEADER] = 0x00;
+    317            
+    318            Int2Str (file_ptr, *length);
+    319            for (j =0, i = i + PACKET_HEADER + 1; file_ptr[j] != '\0' ; )
+    320            {
+    321               data[i++] = file_ptr[j++];
+    322            }
+    323            
+    324            for (j = i; j < PACKET_SIZE + PACKET_HEADER; j++)
+    325            {
+    326              data[j] = 0;
+    327            }
+    328          }
+    329          
+    330          /**
+    331            * @brief  Prepare the data packet
+    332            * @param  timeout
+    333            *     0: end of transmission
+    334            * @retval None
+    335            */
+    336          void Ymodem_PreparePacket(uint8_t *SourceBuf, uint8_t *data, uint8_t pktNo, uint32_t sizeBlk)
+    337          {
+    338            uint16_t i, size, packetSize;
+    339            uint8_t* file_ptr;
+    340            
+    341            /* Make first three packet */
+    342            packetSize = sizeBlk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
+    343            size = sizeBlk < packetSize ? sizeBlk :packetSize;
+    344            if (packetSize == PACKET_1K_SIZE)
+    345            {
+    346               data[0] = STX;
+    347            }
+    348            else
+    349            {
+    350               data[0] = SOH;
+    351            }
+    352            data[1] = pktNo;
+    353            data[2] = (~pktNo);
+    354            file_ptr = SourceBuf;
+    355            
+    356            /* Filename packet has valid data */
+    357            for (i = PACKET_HEADER; i < size + PACKET_HEADER;i++)
+    358            {
+    359               data[i] = *file_ptr++;
+    360            }
+    361            if ( size  <= packetSize)
+    362            {
+    363              for (i = size + PACKET_HEADER; i < packetSize + PACKET_HEADER; i++)
+    364              {
+    365                data[i] = 0x1A; /* EOF (0x1A) or 0x00 */
+    366              }
+    367            }
+    368          }
+    369          
+    370          /**
+    371            * @brief  Update CRC16 for input byte
+    372            * @param  CRC input value 
+    373            * @param  input byte
+    374            * @retval None
+    375            */
+    376          uint16_t UpdateCRC16(uint16_t crcIn, uint8_t byte)
+    377          {
+    378            uint32_t crc = crcIn;
+    379            uint32_t in = byte | 0x100;
+    380          
+    381            do
+    382            {
+    383              crc <<= 1;
+    384              in <<= 1;
+    385              if(in & 0x100)
+    386                ++crc;
+    387              if(crc & 0x10000)
+    388                crc ^= 0x1021;
+    389            }
+    390            
+    391            while(!(in & 0x10000));
+    392          
+    393            return crc & 0xffffu;
+    394          }
+    395          
+    396          
+    397          /**
+    398            * @brief  Cal CRC16 for YModem Packet
+    399            * @param  data
+    400            * @param  length
+    401            * @retval None
+    402            */
+    403          uint16_t Cal_CRC16(const uint8_t* data, uint32_t size)
+    404          {
+    405            uint32_t crc = 0;
+    406            const uint8_t* dataEnd = data+size;
+    407          
+    408            while(data < dataEnd)
+    409              crc = UpdateCRC16(crc, *data++);
+    410           
+    411            crc = UpdateCRC16(crc, 0);
+    412            crc = UpdateCRC16(crc, 0);
+    413          
+    414            return crc&0xffffu;
+    415          }
+    416          
+    417          /**
+    418            * @brief  Cal Check sum for YModem Packet
+    419            * @param  data
+    420            * @param  length
+    421            * @retval None
+    422            */
+    423          uint8_t CalChecksum(const uint8_t* data, uint32_t size)
+    424          {
+    425            uint32_t sum = 0;
+    426            const uint8_t* dataEnd = data+size;
+    427          
+    428            while(data < dataEnd )
+    429              sum += *data++;
+    430          
+    431            return (sum & 0xffu);
+    432          }
+    433          
+    434          /**
+    435            * @brief  Transmit a data packet using the ymodem protocol
+    436            * @param  data
+    437            * @param  length
+    438            * @retval None
+    439            */
+    440          void Ymodem_SendPacket(uint8_t *data, uint16_t length)
+    441          {
+    442            uint16_t i;
+    443            i = 0;
+    444            while (i < length)
+    445            {
+    446              Send_Byte(data[i]);
+    447              i++;
+    448            }
+    449          }
+    450          
+    451          /**
+    452            * @brief  Transmit a file using the ymodem protocol
+    453            * @param  buf: Address of the first byte
+    454            * @retval The size of the file
+    455            */
+    456          uint8_t Ymodem_Transmit (uint8_t *buf, const uint8_t* sendFileName, uint32_t sizeFile)
+    457          {
+    458            
+    459            uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD];
+    460            uint8_t filename[FILE_NAME_LENGTH];
+    461            uint8_t *buf_ptr, tempCheckSum;
+    462            uint16_t tempCRC;
+    463            uint16_t blkNumber;
+    464            uint8_t receivedC[2], CRC16_F = 0, i;
+    465            uint32_t errors, ackReceived, size = 0, pktSize;
+    466          
+    467            errors = 0;
+    468            ackReceived = 0;
+    469            for (i = 0; i < (FILE_NAME_LENGTH - 1); i++)
+    470            {
+    471              filename[i] = sendFileName[i];
+    472            }
+    473            CRC16_F = 1;
+    474              
+    475            /* Prepare first block */
+    476            Ymodem_PrepareIntialPacket(&packet_data[0], filename, &sizeFile);
+    477            
+    478            do 
+    479            {
+    480              /* Send Packet */
+    481              Ymodem_SendPacket(packet_data, PACKET_SIZE + PACKET_HEADER);
+    482          
+    483              /* Send CRC or Check Sum based on CRC16_F */
+    484              if (CRC16_F)
+    485              {
+    486                 tempCRC = Cal_CRC16(&packet_data[3], PACKET_SIZE);
+    487                 Send_Byte(tempCRC >> 8);
+    488                 Send_Byte(tempCRC & 0xFF);
+    489              }
+    490              else
+    491              {
+    492                 tempCheckSum = CalChecksum (&packet_data[3], PACKET_SIZE);
+    493                 Send_Byte(tempCheckSum);
+    494              }
+    495            
+    496              /* Wait for Ack and 'C' */
+    497              if (Receive_Byte(&receivedC[0], 10000) == 0)  
+    498              {
+    499                if (receivedC[0] == ACK)
+    500                { 
+    501                  /* Packet transferred correctly */
+    502                  ackReceived = 1;
+    503                }
+    504              }
+    505              else
+    506              {
+    507                  errors++;
+    508              }
+    509            }while (!ackReceived && (errors < 0x0A));
+    510            
+    511            if (errors >=  0x0A)
+    512            {
+    513              return errors;
+    514            }
+    515            buf_ptr = buf;
+    516            size = sizeFile;
+    517            blkNumber = 0x01;
+    518            /* Here 1024 bytes package is used to send the packets */
+    519            
+    520            
+    521            /* Resend packet if NAK  for a count of 10 else end of communication */
+    522            while (size)
+    523            {
+    524              /* Prepare next packet */
+    525              Ymodem_PreparePacket(buf_ptr, &packet_data[0], blkNumber, size);
+    526              ackReceived = 0;
+    527              receivedC[0]= 0;
+    528              errors = 0;
+    529              do
+    530              {
+    531                /* Send next packet */
+    532                if (size >= PACKET_1K_SIZE)
+    533                {
+    534                  pktSize = PACKET_1K_SIZE;
+    535                 
+    536                }
+    537                else
+    538                {
+    539                  pktSize = PACKET_SIZE;
+    540                }
+    541                Ymodem_SendPacket(packet_data, pktSize + PACKET_HEADER);
+    542                /* Send CRC or Check Sum based on CRC16_F */
+    543                /* Send CRC or Check Sum based on CRC16_F */
+    544                if (CRC16_F)
+    545                {
+    546                   tempCRC = Cal_CRC16(&packet_data[3], pktSize);
+    547                   Send_Byte(tempCRC >> 8);
+    548                   Send_Byte(tempCRC & 0xFF);
+    549                }
+    550                else
+    551                {
+    552                  tempCheckSum = CalChecksum (&packet_data[3], pktSize);
+    553                  Send_Byte(tempCheckSum);
+    554                }
+    555                
+    556                /* Wait for Ack */
+    557                if ((Receive_Byte(&receivedC[0], 100000) == 0)  && (receivedC[0] == ACK))
+    558                {
+    559                  ackReceived = 1;  
+    560                  if (size > pktSize)
+    561                  {
+    562                     buf_ptr += pktSize;  
+    563                     size -= pktSize;
+    564                     if (blkNumber == (USER_FLASH_SIZE/1024))
+    565                     {
+    566                       return 0xFF; /*  error */
+    567                     }
+    568                     else
+    569                     {
+    570                        blkNumber++;
+    571                     }
+    572                  }
+    573                  else
+    574                  {
+    575                    buf_ptr += pktSize;
+    576                    size = 0;
+    577                  }
+    578                }
+    579                else
+    580                {
+    581                  errors++;
+    582                }
+    583              }while(!ackReceived && (errors < 0x0A));
+    584              /* Resend packet if NAK  for a count of 10 else end of communication */
+    585              
+    586              if (errors >=  0x0A)
+    587              {
+    588                return errors;
+    589              }
+    590              
+    591            }
+    592            ackReceived = 0;
+    593            receivedC[0] = 0x00;
+    594            errors = 0;
+    595            do 
+    596            {
+    597              Send_Byte(EOT);
+    598              /* Send (EOT); */
+    599              /* Wait for Ack */
+    600              if ((Receive_Byte(&receivedC[0], 10000) == 0)  && receivedC[0] == ACK)
+    601              {
+    602                ackReceived = 1;  
+    603              }
+    604              else
+    605              {
+    606                errors++;
+    607              }
+    608            }while (!ackReceived && (errors < 0x0A));
+    609              
+    610            if (errors >=  0x0A)
+    611            {
+    612              return errors;
+    613            }
+    614            
+    615            /* Last packet preparation */
+    616            ackReceived = 0;
+    617            receivedC[0] = 0x00;
+    618            errors = 0;
+    619          
+    620            packet_data[0] = SOH;
+    621            packet_data[1] = 0;
+    622            packet_data [2] = 0xFF;
+    623          
+    624            for (i = PACKET_HEADER; i < (PACKET_SIZE + PACKET_HEADER); i++)
+    625            {
+    626               packet_data [i] = 0x00;
+    627            }
+    628            
+    629            do 
+    630            {
+    631              /* Send Packet */
+    632              Ymodem_SendPacket(packet_data, PACKET_SIZE + PACKET_HEADER);
+    633          
+    634              /* Send CRC or Check Sum based on CRC16_F */
+    635              tempCRC = Cal_CRC16(&packet_data[3], PACKET_SIZE);
+    636              Send_Byte(tempCRC >> 8);
+    637              Send_Byte(tempCRC & 0xFF);
+    638            
+    639              /* Wait for Ack and 'C' */
+    640              if (Receive_Byte(&receivedC[0], 10000) == 0)  
+    641              {
+    642                if (receivedC[0] == ACK)
+    643                { 
+    644                  /* Packet transferred correctly */
+    645                  ackReceived = 1;
+    646                }
+    647              }
+    648              else
+    649              {
+    650                  errors++;
+    651              }
+    652            }while (!ackReceived && (errors < 0x0A));
+    653          
+    654            /* Resend packet if NAK  for a count of 10  else end of communication */
+    655            if (errors >=  0x0A)
+    656            {
+    657              return errors;
+    658            }  
+    659            
+    660            do 
+    661            {
+    662              Send_Byte(EOT);
+    663              /* Send (EOT); */
+    664              /* Wait for Ack */
+    665              if ((Receive_Byte(&receivedC[0], 10000) == 0)  && receivedC[0] == ACK)
+    666              {
+    667                ackReceived = 1;  
+    668              }
+    669              else
+    670              {
+    671                errors++;
+    672              }
+    673            }while (!ackReceived && (errors < 0x0A));
+    674          
+    675            if (errors >=  0x0A)
+    676            {
+    677              return errors;
+    678            }
+    679            return 0; /* file transmitted successfully */
+    680          }
+    681          
+    682          /**
+    683            * @}
+    684            */
+    685          
+    686          u32 sflash_address;
+    687          
+    688          u32 index_Down;
+    689          
+    690          s32 Serial_Flash_Down(void)
+    691          {
+    692          	u8 i,j;
+    693          	u8 progressbarValue;
+    694          	FLASH_If_Erase(APPLICATION_ADDRESS);
+    695          	for(i=0;i<Index_Down+1;i++)
+    696          	{
+    697                          progressbarValue = (u32) ((i * 33.0) / Index_Down) + 0x76;
+    698                          SetProgressLineOSD(progressbarValue);
+    699                          
+    700          		sflash_address = 0x10000 + (i*4<<8);
+    701          		SPI_FLASH_BufferRead(tab_1024,sflash_address,1024);  //1024 read and 4 bytes write 1024/4 =
+    702          
+    703          		RamSource =(u32)&tab_1024;
+    704          
+    705          		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
+    706                          
+    707          			
+    708          	}
+    709          	SPI_FLASH_SectorErase(0x3f0000);
+    710          	return 1;
+    711          
+    712          }
+    713          
+    714          s32 Serial_Flash_FactoryInit_Down(void)
+    715          {
+    716          	u8 i,j;
+    717          	
+    718          	SPI_FLASH_SectorErase(0x3e0000);
+    719          	
+    720          	SPI_FLASH_BufferWrite(fatoryinit_start_code,0x3e0000,4);
+    721            
+    722          	FLASH_If_Erase(APPLICATION_ADDRESS);
+    723          	
+    724          	
+    725          	for(i=0;i<Index_Down+1;i++)
+    726          	{
+    727          		sflash_address = 0xA0000 + (i*4<<8);
+    728          		SPI_FLASH_BufferRead(tab_1024,sflash_address,1024);  //1024 read and 4 bytes write 1024/4 =
+    729          
+    730          		RamSource =(u32)&tab_1024;
+    731          
+    732          		index_Down = FLASH_If_Write(&FlashDestination, (uint32_t*) RamSource, 1024/4);
+    733          			
+    734          	}
+    735          	SPI_FLASH_SectorErase(0x3e0000);
+    736          	SPI_FLASH_BufferWrite(fatoryinit_end_code,0x3e0000,4);
+    737          	return 1;
+    738          
+    739          }
+    740          
+    741          
+    742          /*******************(C)COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   CalChecksum
+      16   Cal_CRC16
+         0   -> UpdateCRC16
+        16   -> UpdateCRC16
+      48   Serial_Flash_Down
+        48   -> FLASH_If_Erase
+        48   -> FLASH_If_Write
+        48   -> SPI_FLASH_BufferRead
+        48   -> SPI_FLASH_SectorErase
+        48   -> SetProgressLineOSD
+        48   -> __aeabi_d2iz
+        48   -> __aeabi_ddiv
+        48   -> __aeabi_dmul
+        48   -> __aeabi_ui2d
+      32   Serial_Flash_FactoryInit_Down
+        32   -> FLASH_If_Erase
+        32   -> FLASH_If_Write
+        32   -> SPI_FLASH_BufferRead
+        32   -> SPI_FLASH_BufferWrite
+        32   -> SPI_FLASH_SectorErase
+       0   UpdateCRC16
+       0   Ymodem_CheckResponse
+      24   Ymodem_PrepareIntialPacket
+        24   -> Int2Str
+        24   -> __aeabi_memclr
+      16   Ymodem_PreparePacket
+         0   -> __aeabi_memset
+    1104   Ymodem_Receive
+      1104   -> FLASH_If_Erase
+      1104   -> FLASH_If_Write
+      1104   -> SerialKeyPressed
+      1104   -> SerialPutChar
+      1104   -> Str2Int
+      1104   -> __aeabi_memcpy
+      16   Ymodem_SendPacket
+        16   -> SerialPutChar
+    1336   Ymodem_Transmit
+      1336   -> Cal_CRC16
+      1336   -> SerialKeyPressed
+      1336   -> SerialPutChar
+      1336   -> Ymodem_PrepareIntialPacket
+      1336   -> Ymodem_PreparePacket
+      1336   -> Ymodem_SendPacket
+      1336   -> __aeabi_memclr
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       8  ??DataTable1_6
+       4  ??DataTable1_7
+       4  ??DataTable1_8
+       4  ??DataTable1_9
+       8  ?Subroutine0
+       8  ?Subroutine1
+      20  CalChecksum
+      36  Cal_CRC16
+       4  EraseCounter
+       1  FLASHStatus
+       4  NbrOfPage
+       2  PageSize
+      16  RamSource
+          sflash_address
+          index_Down
+          FlashDestination
+     148  Serial_Flash_Down
+     116  Serial_Flash_FactoryInit_Down
+      32  UpdateCRC16
+       4  Ymodem_CheckResponse
+     102  Ymodem_PrepareIntialPacket
+      94  Ymodem_PreparePacket
+     470  Ymodem_Receive
+      22  Ymodem_SendPacket
+     524  Ymodem_Transmit
+
+ 
+     8 bytes in section .bss
+    19 bytes in section .data
+ 1 628 bytes in section .text
+ 
+ 1 628 bytes of CODE memory
+    27 bytes of DATA memory
+
+Errors: none
+Warnings: 3

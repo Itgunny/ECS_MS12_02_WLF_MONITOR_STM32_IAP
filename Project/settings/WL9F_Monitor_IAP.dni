@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1411469351
+Checksum=-389560871
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -21,6 +21,21 @@ MixedMode=1
 Fmt0={W}42:CAMSig_1	1	0
 Fmt1={W}42:FactoryInit_Pattern	4	0
 Fmt2={W}42:TempKeyValue	4	0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
@@ -31,19 +46,12 @@ Bp3=_ 0 "EMUL_CODE" "{$TOOLKIT_DIR$\inc\c}.735.1" 0 0 1 "" 0 "" 0
 Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.732.2" 0 0 1 "" 0 "" 0
 Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\Windows\system32}.722.2" 0 0 1 "" 0 "" 0
 Bp6=_ 0 "EMUL_CODE" "0xBD10D1D4" 0 0 1 "" 0 "" 0
-Bp7=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\FM31X4.c}.914.2" 0 0 1 "" 0 "" 0
+Bp7=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\FM31X4.c}.922.9" 0 0 1 "" 0 "" 0
 Bp8=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.171.13" 0 0 1 "" 0 "" 0
-Bp9=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.114.2" 0 0 1 "" 0 "" 0
-Bp10=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.122.3" 0 0 1 "" 0 "" 0
-Bp11=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.181.4" 0 0 1 "" 0 "" 0
+Bp9=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.117.3" 0 0 1 "" 0 "" 0
+Bp10=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.133.4" 0 0 1 "" 0 "" 0
+Bp11=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Platform\SRC\main.c}.182.2" 0 0 1 "" 0 "" 0
 Count=12
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Aliases]
 A0=_ "C:\Tools\IAR Systems\Embedded Workbench 6.5\arm\inc\c\DLib_Product_string.h" ""
 A1=_ "C:\Tools\IAR Systems\Workspace_WL9F\WL_F_Monitor_IAP_TEST\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" ""
@@ -53,11 +61,3 @@ A4=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Libraries\STM32F4xx_StdPeriph_Driver\src\st
 A5=_ "C:\Tools\WL9F\WL_F_Monitor_IAP\Platform\SRC\main.c" ""
 Count=6
 SuppressDialog=1
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=0
-Graph=0
-Symbiont=0
-Exclusions=

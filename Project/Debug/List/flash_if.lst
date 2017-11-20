@@ -1,0 +1,332 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.1.4415/W32 for ARM      23/Jan/2017  15:40:56 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\flash_if.c                                     #
+#    Command line =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pla #
+#                    tform\SRC\flash_if.c -D USE_STDPERIPH_DRIVER -D          #
+#                    STM32F4XX -D USE_STM324xG_EVAL -D USE_FULL_ASSERT -lcN   #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\ -o D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_M #
+#                    ONITOR_STM32_IAP\Project\Debug\Obj\ --debug              #
+#                    --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp        #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Ful #
+#                    l.h" -I D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32 #
+#                    _IAP\Project\..\Platform\INC\ -I                         #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\ -I  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\ -I     #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\Common\ -I                  #
+#                    D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\..\Utilities\STM32_EVAL\STM3240_41_G_EVAL\ -Oh      #
+#                    --use_c++_inline -I "C:\Program Files (x86)\IAR          #
+#                    Systems\Embedded Workbench 6.5\arm\CMSIS\Include\"       #
+#    List file    =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\List\flash_if.lst                             #
+#    Object file  =  D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Pro #
+#                    ject\Debug\Obj\flash_if.o                                #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\GIT\WLF_MONITOR\ECS_MS12_02_WLF_MONITOR_STM32_IAP\Platform\SRC\flash_if.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    STM32F4xx_IAP/src/flash_if.c 
+      4            * @author  MCD Application Team
+      5            * @version V1.0.0
+      6            * @date    10-October-2011
+      7            * @brief   This file provides all the memory related operation functions.
+      8            ******************************************************************************
+      9            * @attention
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+     19            ******************************************************************************
+     20            */ 
+     21          
+     22          /** @addtogroup STM32F4xx_IAP
+     23            * @{
+     24            */
+     25          
+     26          /* Includes ------------------------------------------------------------------*/
+     27          #include "flash_if.h"
+     28          
+     29          /* Private typedef -----------------------------------------------------------*/
+     30          /* Private define ------------------------------------------------------------*/
+     31          /* Private macro -------------------------------------------------------------*/
+     32          /* Private variables ---------------------------------------------------------*/
+     33          /* Private function prototypes -----------------------------------------------*/
+     34          static uint32_t GetSector(uint32_t Address);
+     35          
+     36          /* Private functions ---------------------------------------------------------*/
+     37          
+     38          /**
+     39            * @brief  Unlocks Flash for write access
+     40            * @param  None
+     41            * @retval None
+     42            */
+     43          void FLASH_If_Init(void)
+     44          { 
+     45            FLASH_Unlock(); 
+     46          
+     47            /* Clear pending flags (if any) */  
+     48            FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | 
+     49                            FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR);
+     50          }
+     51          
+     52          /**
+     53            * @brief  This function does an erase of all user flash area
+     54            * @param  StartSector: start of user flash area
+     55            * @retval 0: user flash area successfully erased
+     56            *         1: error occurred
+     57            */
+     58          uint32_t FLASH_If_Erase(uint32_t StartSector)
+     59          {
+     60            uint32_t UserStartSector = FLASH_Sector_1, i = 0;
+     61          
+     62            /* Get the sector where start the user flash area */
+     63            UserStartSector = GetSector(APPLICATION_ADDRESS);
+     64          
+     65            for(i = UserStartSector; i <= FLASH_Sector_11; i += 8)
+     66            {
+     67              /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+     68                 be done by word */ 
+     69              if (FLASH_EraseSector(i, VoltageRange_3) != FLASH_COMPLETE)
+     70              {
+     71                /* Error occurred while page erase */
+     72                return (1);
+     73              }
+     74            }
+     75            
+     76            return (0);
+     77          }
+     78          
+     79          /**
+     80            * @brief  This function writes a data buffer in flash (data are 32-bit aligned).
+     81            * @note   After writing data buffer, the flash content is checked.
+     82            * @param  FlashAddress: start address for writing data buffer
+     83            * @param  Data: pointer on data buffer
+     84            * @param  DataLength: length of data buffer (unit is 32-bit word)   
+     85            * @retval 0: Data successfully written to Flash memory
+     86            *         1: Error occurred while writing data in Flash memory
+     87            *         2: Written Data in flash memory is different from expected one
+     88            */
+     89          uint32_t FLASH_If_Write(__IO uint32_t* FlashAddress, uint32_t* Data ,uint32_t DataLength)
+     90          {
+     91            uint32_t i = 0;
+     92          
+     93            for (i = 0; (i < DataLength) && (*FlashAddress <= (USER_FLASH_END_ADDRESS-4)); i++)
+     94            {
+     95              /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+     96                 be done by word */ 
+     97              if (FLASH_ProgramWord(*FlashAddress, *(uint32_t*)(Data+i)) == FLASH_COMPLETE)
+     98              {
+     99               /* Check the written value */
+    100                if (*(uint32_t*)*FlashAddress != *(uint32_t*)(Data+i))
+    101                {
+    102                  /* Flash content doesn't match SRAM content */
+    103                  return(2);
+    104                }
+    105                /* Increment FLASH destination address */
+    106                *FlashAddress += 4;
+    107              }
+    108              else
+    109              {
+    110                /* Error occurred while writing data in Flash memory */
+    111                return (1);
+    112              }
+    113            }
+    114          
+    115            return (0);
+    116          }
+    117          
+    118          /**
+    119            * @brief  Returns the write protection status of user flash area.
+    120            * @param  None
+    121            * @retval 0: No write protected sectors inside the user flash area
+    122            *         1: Some sectors inside the user flash area are write protected
+    123            */
+    124          uint16_t FLASH_If_GetWriteProtectionStatus(void)
+    125          {
+    126            uint32_t UserStartSector = FLASH_Sector_1;
+    127          
+    128            /* Get the sector where start the user flash area */
+    129            UserStartSector = GetSector(APPLICATION_ADDRESS);
+    130          
+    131            /* Check if there are write protected sectors inside the user flash area */
+    132            if ((FLASH_OB_GetWRP() >> (UserStartSector/8)) == (0xFFF >> (UserStartSector/8)))
+    133            { /* No write protected sectors inside the user flash area */
+    134              return 1;
+    135            }
+    136            else
+    137            { /* Some sectors inside the user flash area are write protected */
+    138              return 0;
+    139            }
+    140          }
+    141          
+    142          /**
+    143            * @brief  Disables the write protection of user flash area.
+    144            * @param  None
+    145            * @retval 1: Write Protection successfully disabled
+    146            *         2: Error: Flash write unprotection failed
+    147            */
+    148          uint32_t FLASH_If_DisableWriteProtection(void)
+    149          {
+    150            __IO uint32_t UserStartSector = FLASH_Sector_1, UserWrpSectors = OB_WRP_Sector_1;
+    151          
+    152            /* Get the sector where start the user flash area */
+    153            UserStartSector = GetSector(APPLICATION_ADDRESS);
+    154          
+    155            /* Mark all sectors inside the user flash area as non protected */  
+    156            UserWrpSectors = 0xFFF-((1 << (UserStartSector/8))-1);
+    157             
+    158            /* Unlock the Option Bytes */
+    159            FLASH_OB_Unlock();
+    160          
+    161            /* Disable the write protection for all sectors inside the user flash area */
+    162            FLASH_OB_WRPConfig(UserWrpSectors, DISABLE);
+    163          
+    164            /* Start the Option Bytes programming process. */  
+    165            if (FLASH_OB_Launch() != FLASH_COMPLETE)
+    166            {
+    167              /* Error: Flash write unprotection failed */
+    168              return (2);
+    169            }
+    170          
+    171            /* Write Protection successfully disabled */
+    172            return (1);
+    173          }
+    174          
+    175          /**
+    176            * @brief  Gets the sector of a given address
+    177            * @param  Address: Flash address
+    178            * @retval The sector of a given address
+    179            */
+    180          static uint32_t GetSector(uint32_t Address)
+    181          {
+    182            uint32_t sector = 0;
+    183            
+    184            if((Address < ADDR_FLASH_SECTOR_1) && (Address >= ADDR_FLASH_SECTOR_0))
+    185            {
+    186              sector = FLASH_Sector_0;  
+    187            }
+    188            else if((Address < ADDR_FLASH_SECTOR_2) && (Address >= ADDR_FLASH_SECTOR_1))
+    189            {
+    190              sector = FLASH_Sector_1;  
+    191            }
+    192            else if((Address < ADDR_FLASH_SECTOR_3) && (Address >= ADDR_FLASH_SECTOR_2))
+    193            {
+    194              sector = FLASH_Sector_2;  
+    195            }
+    196            else if((Address < ADDR_FLASH_SECTOR_4) && (Address >= ADDR_FLASH_SECTOR_3))
+    197            {
+    198              sector = FLASH_Sector_3;  
+    199            }
+    200            else if((Address < ADDR_FLASH_SECTOR_5) && (Address >= ADDR_FLASH_SECTOR_4))
+    201            {
+    202              sector = FLASH_Sector_4;  
+    203            }
+    204            else if((Address < ADDR_FLASH_SECTOR_6) && (Address >= ADDR_FLASH_SECTOR_5))
+    205            {
+    206              sector = FLASH_Sector_5;  
+    207            }
+    208            else if((Address < ADDR_FLASH_SECTOR_7) && (Address >= ADDR_FLASH_SECTOR_6))
+    209            {
+    210              sector = FLASH_Sector_6;  
+    211            }
+    212            else if((Address < ADDR_FLASH_SECTOR_8) && (Address >= ADDR_FLASH_SECTOR_7))
+    213            {
+    214              sector = FLASH_Sector_7;  
+    215            }
+    216            else if((Address < ADDR_FLASH_SECTOR_9) && (Address >= ADDR_FLASH_SECTOR_8))
+    217            {
+    218              sector = FLASH_Sector_8;  
+    219            }
+    220            else if((Address < ADDR_FLASH_SECTOR_10) && (Address >= ADDR_FLASH_SECTOR_9))
+    221            {
+    222              sector = FLASH_Sector_9;  
+    223            }
+    224            else if((Address < ADDR_FLASH_SECTOR_11) && (Address >= ADDR_FLASH_SECTOR_10))
+    225            {
+    226              sector = FLASH_Sector_10;  
+    227            }
+    228            else/*(Address < FLASH_END_ADDR) && (Address >= ADDR_FLASH_SECTOR_11))*/
+    229            {
+    230              sector = FLASH_Sector_11;  
+    231            }
+    232              return sector;
+    233          }
+    234          
+    235          /**
+    236            * @}
+    237            */
+    238          
+    239          /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   FLASH_If_DisableWriteProtection
+        16   -> FLASH_OB_Launch
+        16   -> FLASH_OB_Unlock
+        16   -> FLASH_OB_WRPConfig
+        16   -> GetSector
+       8   FLASH_If_Erase
+         8   -> FLASH_EraseSector
+         8   -> GetSector
+       8   FLASH_If_GetWriteProtectionStatus
+         8   -> FLASH_OB_GetWRP
+         8   -> GetSector
+       8   FLASH_If_Init
+         0   -> FLASH_ClearFlag
+         8   -> FLASH_Unlock
+      24   FLASH_If_Write
+        24   -> FLASH_ProgramWord
+       0   GetSector
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable4
+       4  ??DataTable4_1
+       4  ??DataTable4_10
+       4  ??DataTable4_11
+       4  ??DataTable4_2
+       4  ??DataTable4_3
+       4  ??DataTable4_4
+       4  ??DataTable4_5
+       4  ??DataTable4_6
+       4  ??DataTable4_7
+       4  ??DataTable4_8
+       4  ??DataTable4_9
+      62  FLASH_If_DisableWriteProtection
+      38  FLASH_If_Erase
+      34  FLASH_If_GetWriteProtectionStatus
+      16  FLASH_If_Init
+      78  FLASH_If_Write
+     156  GetSector
+
+ 
+ 432 bytes in section .text
+ 
+ 432 bytes of CODE memory
+
+Errors: none
+Warnings: none
